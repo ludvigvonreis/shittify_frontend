@@ -11,7 +11,7 @@ export default function CurrentTrack(props: CurrentTrackProps) {
 				src={props.converSrc}
 				alt="Uhh"
 				className="h-full aspect-square border border-slate-800 
-						   rounded-md transition-transform hover:scale-105"
+						   rounded-md transition-transform hover:scale-105 object-cover"
 			/>
 			<div>
 				<h1 className="hover:underline font-bold cursor-pointer">
