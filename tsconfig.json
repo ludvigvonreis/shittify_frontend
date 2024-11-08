@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+	"baseUrl": "src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@atoms/*": ["atoms/*"],
+      "@utils/*": ["utils/*"],
+      "@hooks/*": ["hooks/*"],
+    }
+  }
+}
