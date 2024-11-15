@@ -5,9 +5,9 @@ import VolumeControl from "./VolumeControl";
 import { CurrentTrackAtom, MediaAtom } from "@atoms/MediaPlayerAtoms";
 import { useSetQueue } from "@hooks/mediaHooks";
 import { useEffect } from "react";
+import AudioController from "./AudioController";
 
 export default function MediaPlayer() {
-	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
 	const currentTrack = useAtomValue(CurrentTrackAtom);
 
 	const setQueue = useSetQueue();
@@ -21,10 +21,21 @@ export default function MediaPlayer() {
 				album: "Dark Side of The Moon",
 				track_id: "",
 				name: "Time",
-				duration: 120,
+				duration: 732,
 				index: 3,
-				path: "",
+				path: "http://localhost:3000/v1/static/tracks/VtBAacMqO6Onu0sQ5f_rB.mp3",
 				image: "https://1265745076.rsc.cdn77.org/1024/jpg/134180-pink-floyd-dark-side-of-the-moon-LP-64f198fb82963.jpg",
+			}, {
+				artist_id: "",
+				artist: "Melker",
+				album_id: "",
+				album: "MM Melker",
+				track_id: "",
+				name: "Rizzlers",
+				duration: 189,
+				index: 8,
+				path: "http://localhost:3000/v1/static/tracks/raiqg_FVfR_ylzFTboG3J.mp3",
+				image: "http://localhost:3000/v1/static/images/gukRcaSh6fHfxCik9bjQD.png",
 			},
 		]);
 	}, []);
@@ -32,8 +43,8 @@ export default function MediaPlayer() {
 	return (
 		<div className="w-full h-24 bg-slate-800 fixed bottom-0 grid grid-cols-4 grid-rows-1">
 			<CurrentTrack
-				title={currentTrack ? currentTrack.name : ""}
-				artist={currentTrack ? currentTrack.artist : ""}
+				title={currentTrack ? currentTrack.name : "Unknown"}
+				artist={currentTrack ? currentTrack.artist : "Unknown"}
 				converSrc={
 					currentTrack
 						? currentTrack.image
@@ -42,6 +53,7 @@ export default function MediaPlayer() {
 			/>
 			<MediaControls />
 			<VolumeControl />
+			<AudioController />
 		</div>
 	);
 }

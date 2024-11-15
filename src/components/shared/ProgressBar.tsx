@@ -1,5 +1,6 @@
+import { animated, useSpring } from "@react-spring/web";
 import { useRef, useState } from "react";
-import { twMerge } from 'tailwind-merge'
+import { twMerge } from "tailwind-merge";
 
 interface ProgressBarProps {
 	percentage?: number;
@@ -34,10 +35,8 @@ export default function ProgressBar({
 			ref={progressRef}
 		>
 			<div
-				className="h-full rounded-md bg-white"
-				style={{
-					width: `${Math.min(percentage, 1) * 100}%`,
-				}}
+				className="h-full rounded-md bg-white transition-all duration-100 ease-out"
+				style={{width: `${Math.min(percentage, 1) * 100}%`}}
 			></div>
 		</div>
 	);

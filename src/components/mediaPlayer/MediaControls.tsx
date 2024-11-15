@@ -6,6 +6,7 @@ import {
 } from "@atoms/MediaPlayerAtoms";
 import Icon from "@components/shared/Icon";
 import ProgressBar from "@components/shared/ProgressBar";
+import { useSetQueueIndex } from "@hooks/mediaHooks";
 import { secondsToClockFormat } from "@utils/time";
 import { useAtom, useAtomValue } from "jotai";
 import { twMerge } from "tailwind-merge";
@@ -16,12 +17,14 @@ export default function MediaControls() {
 	const currentTrack = useAtomValue(CurrentTrackAtom)
 	const accentColor = useAtomValue(AccentColorAtom);
 
+	const setQueueIndex = useSetQueueIndex();
+
 	// FIXME: Temporary until the actual song is implemented.
 	const duration = currentTrack ? currentTrack.duration : 0;
 
 	// Styling for icons
 	const iconClassName = "text-[2.5rem] cursor-pointer";
-	const sideIconsClassName = "text-[2rem] cursor-pointer";
+	const sideIconsClassName = "text-[2rem] cursor-pointer transition-all duration-500 ease-out";
 	const shuffleColor = togglesAtom.isShuffle
 		? accentColor.text
 		: "text-slate-500";
@@ -41,10 +44,13 @@ export default function MediaControls() {
 						})
 					}
 				/>
-				<Icon type="fast_rewind" className={iconClassName} />
+				<Icon type="fast_rewind" className={iconClassName} onClick={() => {
+					// Subtract one from index, relative to current index
+					setQueueIndex(-1, true);
+				}}/>
 				<Icon
 					type={
-						togglesAtom.isPlaying ? "play_circle" : "pause_circle"
+						!togglesAtom.isPlaying ? "play_circle" : "pause_circle"
 					}
 					className={iconClassName}
 					onClick={() =>
@@ -54,7 +60,10 @@ export default function MediaControls() {
 						})
 					}
 				/>
-				<Icon type="fast_forward" className={iconClassName} />
+				<Icon type="fast_forward" className={iconClassName} onClick={() => {
+					// Add one to index, relative to current index
+					setQueueIndex(1, true);
+				}} />
 				<Icon
 					type="repeat"
 					className={twMerge(sideIconsClassName, loopColor)}
@@ -66,12 +75,12 @@ export default function MediaControls() {
 					}
 				/>
 			</div>
-			<div className="w-full flex flex-row justify-center items-center">
+			<div className="w-full flex flex-row justify-evenly items-center">
 				<span className="w-5 text-slate-400">
 					{secondsToClockFormat(progressAtom.progress)}
 				</span>
 				<ProgressBar
-					className="w-3/4 ml-5 mr-2"
+					className="w-3/4"
 					percentage={progressAtom.progress / duration}
 					onChangeProgress={(value) => {
 						setProgressAtom({
