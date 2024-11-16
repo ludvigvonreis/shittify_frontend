@@ -1,4 +1,8 @@
 import { useSpring, animated } from "@react-spring/web";
+import FoldingQueue from "./FoldingQueue";
+import { useState } from "react";
+import { MediaAtom } from "@atoms/MediaPlayerAtoms";
+import { useAtomValue } from "jotai";
 
 interface CurrentTrackProps {
 	title: string;
@@ -7,37 +11,43 @@ interface CurrentTrackProps {
 }
 
 export default function CurrentTrack(props: CurrentTrackProps) {
+	const [isFoldActive, setIsFoldActive] = useState(true);
 	const fadeIn = useSpring({
-		from: { opacity: 0, transform: "translateX(20px)" },
-		to: { opacity: 1, transform: "translateX(0px)" },
-		reset: true,
-		config: { tension: 200, friction: 20 },
+		from: { opacity: 0, transform: "translateY(20px)" },
+		to: { opacity: 1, transform: "translateY(0px)" },
+		//reset: true,
+		config: { tension: 200, friction: 20, duration: 200 },
 	});
+
+	const mediaAtom = useAtomValue(MediaAtom);
 
 
 	return (
-		<animated.div
-			className="flex justify-start items-center p-1 gap-4 select-none"
-			style={fadeIn}
-		>
-			<img
-				src={props.converSrc}
-				alt="Uhh"
-				className="h-full aspect-square border border-slate-800 
-						   rounded-md transition-transform hover:scale-105 object-cover"
-			/>
-			<div>
-				<h1
-					className="hover:underline font-bold cursor-pointer"
-				>
-					{props.title}
-				</h1>
-				<p
-					className="hover:underline text-sm text-slate-400 cursor-pointer"
-				>
-					{props.artist}
-				</p>
+		<>
+			<div className="flex justify-start items-center p-1 gap-4 select-none relative">
+				<FoldingQueue isActive={isFoldActive} />
+				<div
+					className="absolute w-full h-full top-0"
+					onClick={(e) => {
+						e.stopPropagation();
+						setIsFoldActive(mediaAtom.queue.length > 0 ? !isFoldActive : false);
+					}}
+				/>
+				<img
+					src={props.converSrc}
+					alt="Uhh"
+					className="h-full aspect-square border border-slate-800 
+						   rounded-md transition-transform hover:scale-105 object-cover"   
+				/>
+				<animated.div style={fadeIn}>
+					<h1 className="hover:underline font-bold cursor-pointer">
+						{props.title}
+					</h1>
+					<p className="hover:underline text-sm text-slate-400 cursor-pointer">
+						{props.artist}
+					</p>
+				</animated.div>
 			</div>
-		</animated.div>
+		</>
 	);
 }
