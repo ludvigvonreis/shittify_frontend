@@ -66,8 +66,6 @@ export function useOnTrackEnd() {
 			}
 		}
 
-		console.log("hello world", newIndex)
-
 		setMediaAtom({ ...mediaAtom, queueIndex: newIndex});
 	};
 }
