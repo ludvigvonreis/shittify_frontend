@@ -12,12 +12,26 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as SearchIndexImport } from './routes/search/index'
+import { Route as SearchQueryImport } from './routes/search/$query'
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SearchIndexRoute = SearchIndexImport.update({
+  id: '/search/',
+  path: '/search/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SearchQueryRoute = SearchQueryImport.update({
+  id: '/search/$query',
+  path: '/search/$query',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -32,6 +46,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/search/$query': {
+      id: '/search/$query'
+      path: '/search/$query'
+      fullPath: '/search/$query'
+      preLoaderRoute: typeof SearchQueryImport
+      parentRoute: typeof rootRoute
+    }
+    '/search/': {
+      id: '/search/'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/search/$query': typeof SearchQueryRoute
+  '/search': typeof SearchIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/search/$query': typeof SearchQueryRoute
+  '/search': typeof SearchIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/search/$query': typeof SearchQueryRoute
+  '/search/': typeof SearchIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/search/$query' | '/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/search/$query' | '/search'
+  id: '__root__' | '/' | '/search/$query' | '/search/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SearchQueryRoute: typeof SearchQueryRoute
+  SearchIndexRoute: typeof SearchIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SearchQueryRoute: SearchQueryRoute,
+  SearchIndexRoute: SearchIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +115,19 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/search/$query",
+        "/search/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/search/$query": {
+      "filePath": "search/$query.tsx"
+    },
+    "/search/": {
+      "filePath": "search/index.tsx"
     }
   }
 }

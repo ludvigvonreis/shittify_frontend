@@ -4,10 +4,10 @@ import MediaControls from "./MediaControls";
 import VolumeControl from "./VolumeControl";
 import { CurrentTrackAtom, MediaAtom } from "@atoms/MediaPlayerAtoms";
 import { useSetQueue } from "@hooks/mediaHooks";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import AudioController from "./AudioController";
 
-export default function MediaPlayer() {
+function MediaPlayer() {
 	const currentTrack = useAtomValue(CurrentTrackAtom);
 
 	const setQueue = useSetQueue();
@@ -57,3 +57,6 @@ export default function MediaPlayer() {
 		</div>
 	);
 }
+
+
+export default memo(MediaPlayer);
