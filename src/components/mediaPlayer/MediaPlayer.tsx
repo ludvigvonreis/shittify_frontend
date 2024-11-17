@@ -25,7 +25,8 @@ function MediaPlayer() {
 				index: 3,
 				path: "http://localhost:3000/v1/static/tracks/VtBAacMqO6Onu0sQ5f_rB.mp3",
 				image: "https://1265745076.rsc.cdn77.org/1024/jpg/134180-pink-floyd-dark-side-of-the-moon-LP-64f198fb82963.jpg",
-			}, {
+			},
+			{
 				artist_id: "",
 				artist: "Melker",
 				album_id: "",
@@ -37,6 +38,30 @@ function MediaPlayer() {
 				path: "http://localhost:3000/v1/static/tracks/raiqg_FVfR_ylzFTboG3J.mp3",
 				image: "http://localhost:3000/v1/static/images/gukRcaSh6fHfxCik9bjQD.png",
 			},
+			{
+				artist_id: "KAVcotc8s30hqndLSpNfG",
+				artist: "Pink Floyd",
+				album_id: "JkyvyRY6GBuJ9eDvmVt6r",
+				album: "The Wall",
+				image: "http://localhost:3000/v1/static/images/9JiEfD2STlyGgw0zpbEhC.png",
+				track_id: "OrzZgVgEAGyAcv7VZNtlP",
+				name: "One Of My Turns",
+				duration: 216,
+				index: 10,
+				path: "http://localhost:3000/v1/static/tracks/L0AziOphiBEVUOVhZU1H1.mp3",
+			},
+			{
+				artist_id: "KAVcotc8s30hqndLSpNfG",
+				artist: "Pink Floyd",
+				album_id: "JkyvyRY6GBuJ9eDvmVt6r",
+				album: "The Wall",
+				image: "http://localhost:3000/v1/static/images/9JiEfD2STlyGgw0zpbEhC.png",
+				track_id: "uzIFoKsgcz5m_K42Mw9NH",
+				name: "Another Brick In The Wall (Part 2)",
+				duration: 238,
+				index: 5,
+				path: "http://localhost:3000/v1/static/tracks/S9S6sNSHgwn98ZRoGoBbU.mp3"
+			}
 		]);
 	}, []);
 
@@ -57,6 +82,5 @@ function MediaPlayer() {
 		</div>
 	);
 }
-
 
 export default memo(MediaPlayer);
