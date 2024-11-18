@@ -28,6 +28,12 @@ export default function SearchField() {
 		}
 	}
 
+	function onFocus() {
+		navigate({
+			to: "/search",
+		});
+	}
+
 	return (
 		<div className="justify-center flex items-center">
 			<div className="relative w-full">
@@ -42,6 +48,7 @@ export default function SearchField() {
 					hover:border-none focus:outline-none focus:ring-0 active:outline-none"
 					placeholder="Search"
 					onChange={onChange}
+					onFocus={onFocus}
 					value={search}
 				/>
 			</div>

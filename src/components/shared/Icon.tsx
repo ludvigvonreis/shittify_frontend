@@ -9,6 +9,7 @@ interface IconProps {
 export default function Icon(props: IconProps) {
 	return (
 		<span
+			data-ignore-click
 			className={twMerge("material-symbols-outlined inline align-bottom select-none", props.className)}
 			onClick={props.onClick}
 		>

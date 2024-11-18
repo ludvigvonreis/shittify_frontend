@@ -30,6 +30,7 @@ export default function ProgressBar({
 
 	return (
 		<div
+			data-ignore-click
 			className={twMerge("w-full h-3 rounded-md bg-slate-500", className)}
 			onClick={onClick}
 			ref={progressRef}

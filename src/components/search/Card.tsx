@@ -21,10 +21,10 @@ export default function Card(props: CardProps) {
 				alt={`${props.header} image`}
 			/>
 			<div>
-				<h2 className="text-lg font-bold hover:underline truncate">
+				<h2 className="text-base font-medium hover:underline truncate">
 					{props.header}
 				</h2>
-				<p className="text-slate-400 font-light">{props.type}</p>
+				<p className="text-slate-400 font-light text-sm">{props.type}</p>
 			</div>
 		</div>
 	);

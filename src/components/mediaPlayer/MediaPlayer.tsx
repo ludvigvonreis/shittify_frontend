@@ -16,27 +16,27 @@ function MediaPlayer() {
 		setQueue([
 			{
 				artist_id: "",
-				artist: "Pink Floyd",
+				artist: "Masayoshi Takanaka",
 				album_id: "",
-				album: "Dark Side of The Moon",
+				album: "The Rainbow Goblins",
 				track_id: "",
-				name: "Time",
-				duration: 732,
+				name: "The Seven Goblins",
+				duration: 192,
 				index: 3,
-				path: "http://localhost:3000/v1/static/tracks/VtBAacMqO6Onu0sQ5f_rB.mp3",
-				image: "https://1265745076.rsc.cdn77.org/1024/jpg/134180-pink-floyd-dark-side-of-the-moon-LP-64f198fb82963.jpg",
+				path: "http://localhost:3000/v1/static/tracks/oRcLE6ggK1SxhI2GlvxB9.mp3",
+				image: "http://localhost:3000/v1/static/images/yIpx__cbkgcDqn-5MExIG.png",
 			},
 			{
 				artist_id: "",
-				artist: "Melker",
+				artist: "The Strokes",
 				album_id: "",
-				album: "MM Melker",
+				album: "Is This It",
 				track_id: "",
-				name: "Rizzlers",
-				duration: 189,
+				name: "Soma",
+				duration: 154,
 				index: 8,
-				path: "http://localhost:3000/v1/static/tracks/raiqg_FVfR_ylzFTboG3J.mp3",
-				image: "http://localhost:3000/v1/static/images/gukRcaSh6fHfxCik9bjQD.png",
+				path: "http://localhost:3000/v1/static/tracks/JhEMJxyvocHwj9PxmuKrH.mp3",
+				image: "http://localhost:3000/v1/static/images/lmqvyYaeM-GMCY4zlRA0f.png",
 			},
 			{
 				artist_id: "KAVcotc8s30hqndLSpNfG",
@@ -61,6 +61,18 @@ function MediaPlayer() {
 				duration: 238,
 				index: 5,
 				path: "http://localhost:3000/v1/static/tracks/S9S6sNSHgwn98ZRoGoBbU.mp3"
+			}, 
+			{
+				artist_id: "lo1HTr9iEldVYXi-WVZaN",
+				artist: "The Strokes",
+				album_id: "Zd1ynA7aPAuvWbyjdLc0g",
+				album: "Is This It",
+				image: "http://localhost:3000/v1/static/images/lmqvyYaeM-GMCY4zlRA0f.png",
+				track_id: "wJxaWAhLWqqQVprVFne1Y",
+				name: "The Modern Age",
+				duration: 208,
+				index: 2,
+				path: "http://localhost:3000/v1/static/tracks/QKxnyaP1qvrIMGu4AxKfD.mp3"
 			}
 		]);
 	}, []);

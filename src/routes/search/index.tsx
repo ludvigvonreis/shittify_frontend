@@ -13,7 +13,7 @@ function RouteComponent() {
 				<div className="flex flex-row gap-2">
 					<Card
 						type={"Artist"}
-						header={"Pink floyd"}
+						header={"Pink Floyd"}
 						image={
 							"http://localhost:3000/v1/static/images/qbbMyMJCoxdcEjGpuQixO.png"
 						}

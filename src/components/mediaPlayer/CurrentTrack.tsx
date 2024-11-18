@@ -40,10 +40,10 @@ export default function CurrentTrack(props: CurrentTrackProps) {
 						   rounded-md transition-transform hover:scale-105 object-cover"   
 				/>
 				<animated.div style={fadeIn}>
-					<h1 className="hover:underline font-bold cursor-pointer">
+					<h1 className="hover:underline font-medium cursor-pointer">
 						{props.title}
 					</h1>
-					<p className="hover:underline text-sm text-slate-400 cursor-pointer">
+					<p className="hover:underline text-sm font-light text-slate-400 cursor-pointer inline-block">
 						{props.artist}
 					</p>
 				</animated.div>
