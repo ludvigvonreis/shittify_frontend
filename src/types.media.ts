@@ -29,3 +29,19 @@ interface Artist {
 	genre: string;
 	image: string;
 }
+
+interface SearchResults {
+	artist_id: string
+	artist_name: string
+	artist_image: string
+	artist_genre: string
+	album_id: string
+	album_name: string
+	release_date: string
+	album_image: string
+	track_id: string
+	track_name: string
+	track_duration: number
+	track_index: number
+	track_path: string
+}
