@@ -15,14 +15,14 @@ function RouteComponent() {
 						type={"Artist"}
 						header={"Pink Floyd"}
 						image={
-							"http://localhost:3000/v1/static/images/qbbMyMJCoxdcEjGpuQixO.png"
+							"http://192.168.198.128:3000/v1/static/images/qbbMyMJCoxdcEjGpuQixO.png"
 						}
 					/>
 					<Card
 						type={"Album"}
 						header={"Dark Side Of The Moon"}
 						image={
-							"http://localhost:3000/v1/static/images/vxdbijX247MGCZnEZYUUz.png"
+							"http://192.168.198.128:3000/v1/static/images/vxdbijX247MGCZnEZYUUz.png"
 						}
 					/>
 				</div>

@@ -3,10 +3,13 @@ import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import MediaPlayer from "@components/mediaPlayer/MediaPlayer";
 import SearchField from "@components/search/SearchField";
 import { useAtomValue } from "jotai";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 export const Route = createRootRoute({
 	component: RootComponent,
 });
+
+const queryClient = new QueryClient();
 
 function RootComponent() {
 	return (
@@ -16,7 +19,9 @@ function RootComponent() {
 				<SearchField />
 				<div className="justify-end"></div>
 			</div>
-			<Outlet />
+			<QueryClientProvider client={queryClient}>
+				<Outlet />
+			</QueryClientProvider>
 			<MediaPlayer />
 			<TanStackRouterDevtools position="top-right" />
 		</>
