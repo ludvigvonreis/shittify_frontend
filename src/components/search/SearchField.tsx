@@ -1,13 +1,16 @@
 import Icon from "@components/shared/Icon";
 import { usePageTitle } from "@hooks/usePageTitle";
 import { useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { atom, useAtom } from "jotai";
+import { useRef } from "react";
+
+export const SearchAtom = atom("");
 
 export default function SearchField() {
 	usePageTitle("Shittify - Search");
 
 	const navigate = useNavigate();
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useAtom(SearchAtom);
 	const searchRef = useRef<HTMLInputElement | null>(null);
 
 	function onChange() {
@@ -29,6 +32,8 @@ export default function SearchField() {
 	}
 
 	function onFocus() {
+		if (searchRef.current?.value !== "") return;
+
 		navigate({
 			to: "/search",
 		});

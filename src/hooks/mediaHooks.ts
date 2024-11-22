@@ -1,6 +1,23 @@
 import { MediaAtom, ProgressAtom, TogglesAtom } from "@atoms/MediaPlayerAtoms";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
+export function useAddToQueue() {
+	const setMediaAtom = useSetAtom(MediaAtom);
+
+	return (track: Track, changeToTrack = false) => {
+		setMediaAtom((mediaAtom) => {
+			return {
+				...mediaAtom,
+				queue: [...mediaAtom.queue, track],
+				queueIndex: changeToTrack
+					? mediaAtom.queue.length
+					: mediaAtom.queueIndex,
+			};
+		});
+		
+	};
+}
+
 export function useSetQueue() {
 	const setMediaAtom = useSetAtom(MediaAtom);
 	const setProgressAtom = useSetAtom(ProgressAtom);
@@ -31,7 +48,11 @@ export function useSetQueueIndex() {
 
 		if (newIndex < 0) {
 			setProgressAtom((progressAtom) => {
-				return { ...progressAtom, progress: 0, isProgressChanged: true };
+				return {
+					...progressAtom,
+					progress: 0,
+					isProgressChanged: true,
+				};
 			});
 			return false;
 		}
@@ -55,17 +76,15 @@ export function useOnTrackEnd() {
 	return () => {
 		let newIndex = mediaAtom.queueIndex + 1;
 
-		if (
-			newIndex >= mediaAtom.queue.length
-		) {
+		if (newIndex >= mediaAtom.queue.length) {
 			if (mediaToggles.isLooping === true) {
 				newIndex = 0;
 			} else {
 				newIndex = mediaAtom.queueIndex;
-				setMediaToggles({...mediaToggles, isPlaying: false});
+				setMediaToggles({ ...mediaToggles, isPlaying: false });
 			}
 		}
 
-		setMediaAtom({ ...mediaAtom, queueIndex: newIndex});
+		setMediaAtom({ ...mediaAtom, queueIndex: newIndex });
 	};
 }
