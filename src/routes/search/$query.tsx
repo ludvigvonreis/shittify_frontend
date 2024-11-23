@@ -61,6 +61,7 @@ function RouteComponent() {
 					{data.slice(0, 4).map((element) => {
 						return (
 							<li
+								key={element.track_id}
 								className="hover:bg-slate-800 rounded-md h-16 flex flex-row 
 								items-center gap-3 p-1 w-ful transition-colors"
 								onDoubleClick={() => {
