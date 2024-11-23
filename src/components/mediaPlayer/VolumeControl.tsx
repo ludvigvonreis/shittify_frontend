@@ -9,6 +9,7 @@ import { useAtom, useAtomValue } from "jotai";
 import FoldingQueue from "./FoldingQueue";
 import { foldAtom } from "@atoms/atoms";
 import { twMerge } from "tailwind-merge";
+import { useState } from "react";
 
 export default function VolumeControl() {
 	const [volumeAtom, setVolumeAtom] = useAtom(VolumeAtom);
@@ -16,14 +17,33 @@ export default function VolumeControl() {
 	const mediaAtom = useAtomValue(MediaAtom);
 	const accentColor = useAtomValue(AccentColorAtom);
 
-	const icon =
+	// Muting
+	const [lastVolume, setLastVolume] = useState(0);
+	const [isMuted, setIsMuted] = useState(volumeAtom === 0);
+
+	function onMute() {
+		if (isMuted) {
+			setIsMuted(false);
+			setVolumeAtom(lastVolume);
+		} else {
+			setLastVolume(volumeAtom);
+			setIsMuted(true);
+			setVolumeAtom(0);
+		}
+	}
+
+	let icon =
 		volumeAtom > 0.1
 			? volumeAtom > 0.5
 				? "volume_up"
 				: "volume_down"
 			: "volume_mute";
 
-	const queueButtonColor = isFoldActive ? accentColor.text : "";
+	icon = isMuted ? "volume_off" : icon;
+
+	const queueButtonColor = isFoldActive
+		? `${accentColor.text} hover:${accentColor.text}`
+		: "";
 
 	return (
 		<div className="flex justify-end items-center mr-5 gap-2">
@@ -31,7 +51,10 @@ export default function VolumeControl() {
 			<Icon
 				title="Open Queue"
 				type="queue"
-				className={twMerge("transition-colors", queueButtonColor)}
+				className={twMerge(
+					"transition-colors text-slate-300 hover:text-inherit",
+					queueButtonColor
+				)}
 				onClick={(e) => {
 					e.stopPropagation();
 					setIsFoldActive((isFoldActive: boolean) =>
@@ -39,7 +62,12 @@ export default function VolumeControl() {
 					);
 				}}
 			/>
-			<Icon type={icon} className="text-2xl" />
+			<Icon
+				type={icon}
+				title="Mute Volume"
+				className="transition-colors text-2xl text-slate-300 hover:text-inherit"
+				onClick={onMute}
+			/>
 			<ProgressBar
 				percentage={volumeAtom}
 				onChangeProgress={(newValue) => {

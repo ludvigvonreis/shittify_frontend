@@ -135,7 +135,7 @@ export default function FoldingQueue() {
 	return (
 		<animated.div
 			ref={divRef}
-			className="absolute w-[30rem] rounded-md bg-slate-800 scroll-smooth
+			className="absolute w-[30rem] rounded-md bg-slate-800
 				bottom-full mb-4 overflow-y-scroll overflow-x-hidden max-h-[30vh]"
 			style={{ ...animation, pointerEvents: isActive ? "auto" : "none" }}
 		>
