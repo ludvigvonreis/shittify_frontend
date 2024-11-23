@@ -4,7 +4,7 @@ interface IconProps {
 	type: string;
 	className?: string;
 	title?: string;
-	onClick?: (e?: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
+	onClick?: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
 }
 
 export default function Icon(props: IconProps) {

@@ -55,7 +55,7 @@ function RouteComponent() {
 
 	return (
 		<main className="pb-24">
-			<div className="h-max w-full flex flex-row p-5 gap-5">
+			<header className="h-max w-full flex flex-row p-5 gap-5">
 				<img
 					src={data.albumCoverSrc}
 					alt=""
@@ -77,7 +77,7 @@ function RouteComponent() {
 						</span>
 					</p>
 				</div>
-			</div>
+			</header>
 			<Icon
 				type="play_circle"
 				className={twMerge("pl-8 text-[4rem]", accentColor.text)}

@@ -75,11 +75,11 @@ export default function TrackListItem({
 			{/* Add to Queue Button */}
 			<button
 				title="Add to Queue"
-				className="justify-self-center cursor-pointer"
+				className="justify-self-center cursor-pointer opacity-0 group-hover:opacity-100"
 				onClick={addToQueue}
 			>
 				<Icon
-					type={isInQueue ? "" : "queue_music"}
+					type={"queue_music"}
 				/>
 			</button>
 

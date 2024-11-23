@@ -1,5 +1,4 @@
 import { useSpring, animated } from "@react-spring/web";
-import FoldingQueue from "./FoldingQueue";
 import { MediaAtom } from "@atoms/MediaPlayerAtoms";
 import { useAtomValue, useSetAtom } from "jotai";
 import { foldAtom } from "@atoms/atoms";
@@ -11,7 +10,6 @@ interface CurrentTrackProps {
 }
 
 export default function CurrentTrack(props: CurrentTrackProps) {
-	const setIsFoldActive = useSetAtom(foldAtom);
 	const fadeIn = useSpring({
 		from: { opacity: 0, transform: "translateY(20px)" },
 		to: { opacity: 1, transform: "translateY(0px)" },
@@ -19,19 +17,11 @@ export default function CurrentTrack(props: CurrentTrackProps) {
 		config: { tension: 200, friction: 20, duration: 200 },
 	});
 
-	const mediaAtom = useAtomValue(MediaAtom);
-
-
 	return (
 		<>
 			<div className="flex justify-start items-center p-1 gap-4 select-none relative">
-				<FoldingQueue />
 				<div
 					className="absolute w-full h-full top-0"
-					onClick={(e) => {
-						e.stopPropagation();
-						setIsFoldActive((isFoldActive: boolean) => mediaAtom.queue.length > 1 ? !isFoldActive : false);
-					}}
 				/>
 				<img
 					src={props.converSrc}

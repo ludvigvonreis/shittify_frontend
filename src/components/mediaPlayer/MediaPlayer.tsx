@@ -78,7 +78,7 @@ function MediaPlayer() {
 	}, []);
 
 	return (
-		<div className="w-full h-24 bg-slate-800 fixed bottom-0 grid grid-cols-4 grid-rows-1">
+		<footer className="w-full h-24 bg-slate-800 fixed bottom-0 grid grid-cols-4 grid-rows-1">
 			<CurrentTrack
 				title={currentTrack ? currentTrack.name : "Unknown"}
 				artist={currentTrack ? currentTrack.artist : "Unknown"}
@@ -91,7 +91,7 @@ function MediaPlayer() {
 			<MediaControls />
 			<VolumeControl />
 			<AudioController />
-		</div>
+		</footer>
 	);
 }
 
