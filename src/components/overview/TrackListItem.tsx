@@ -85,7 +85,7 @@ export default function TrackListItem({
 			</button>
 
 			{/* Track Duration */}
-			<time className="text-right">
+			<time className="text-right text-slate-400 text-light">
 				{secondsToClockFormat(element.duration)}
 			</time>
 		</article>
