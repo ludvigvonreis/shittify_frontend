@@ -13,6 +13,7 @@ import { twMerge } from "tailwind-merge";
 import TrackListItem from "@components/overview/TrackListItem";
 import { ToastMessageAtom } from "@atoms/atoms";
 import { Messages } from "@utils/constants";
+import { usePageTitle } from "@hooks/usePageTitle";
 
 export const Route = createFileRoute("/album/$albumid")({
 	component: RouteComponent,
@@ -34,6 +35,8 @@ function RouteComponent() {
 
 	if (!isSuccess) return <>ERROR</>;
 
+	usePageTitle(`${data.title} - ${data.artist}`)
+
 	const setQueue = useSetQueue();
 	const addQueue = useAddToQueue();
 	const accentColor = useAtomValue(AccentColorAtom);
@@ -47,6 +50,7 @@ function RouteComponent() {
 
 	const tableBody = data.contents.map((element, index) => (
 		<TrackListItem
+			key={element.track_id}
 			element={element}
 			queue={mediaAtom.queue}
 			currentTrack={currentTrack}

@@ -6,6 +6,7 @@ import { useSetQueue } from "@hooks/mediaHooks";
 import { useAtom, useSetAtom } from "jotai";
 import { TogglesAtom } from "@atoms/MediaPlayerAtoms";
 import { SearchAtom } from "@components/search/SearchField";
+import { usePageTitle } from "@hooks/usePageTitle";
 
 export const Route = createFileRoute("/search/$query")({
 	component: RouteComponent,
@@ -27,6 +28,7 @@ async function getSearchResults(query: string) {
 function RouteComponent() {
 	const { query } = Route.useParams();
 	const [search, setSearch] = useAtom(SearchAtom);
+	usePageTitle("Shittify - Search");
 
 	if (query !== search) {
 		setSearch(query);

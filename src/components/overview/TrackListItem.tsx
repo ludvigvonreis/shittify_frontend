@@ -31,7 +31,6 @@ export default function TrackListItem({
 
 	return (
 		<article
-			key={index}
 			className="grid grid-cols-[50px_1fr_2rem_3rem] select-none group
     		items-center hover:bg-slate-800 rounded-md px-2 py-2"
 			onDoubleClick={onDoubleClick}
@@ -40,8 +39,11 @@ export default function TrackListItem({
 			<div className="relative flex items-center justify-center w-12 h-12 overflow-hidden">
 				{/* Track Index */}
 				<span
-					className="absolute w-full h-full flex items-center 
-        		justify-center text-lg opacity-100 group-hover:opacity-0"
+					className={twMerge(
+						`absolute w-full h-full flex items-center justify-center 
+						text-lg opacity-100 group-hover:opacity-0`,
+						trackTextStyle
+					)}
 				>
 					{element.index}
 				</span>
@@ -75,12 +77,11 @@ export default function TrackListItem({
 			{/* Add to Queue Button */}
 			<button
 				title="Add to Queue"
-				className="justify-self-center cursor-pointer opacity-0 group-hover:opacity-100"
+				className="justify-self-center cursor-pointer opacity-0 text-slate-300
+					group-hover:opacity-100 hover:text-inherit"
 				onClick={addToQueue}
 			>
-				<Icon
-					type={"queue_music"}
-				/>
+				<Icon type={"queue_music"} />
 			</button>
 
 			{/* Track Duration */}

@@ -1,4 +1,5 @@
 import Card from "@components/search/Card";
+import { usePageTitle } from "@hooks/usePageTitle";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/search/")({
@@ -6,6 +7,8 @@ export const Route = createFileRoute("/search/")({
 });
 
 function RouteComponent() {
+	usePageTitle("Shittify - Search");
+
 	return (
 		<>
 			<section className="p-5">

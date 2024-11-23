@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 function RootComponent() {
 	return (
 		<>
-			<nav className="w-full h-16 grid grid-cols-3 grid-rows-1 bg-slate-800">
+			<nav className="w-full h-16 grid grid-cols-3 grid-rows-1 "> 
 				<div className="justify-start"></div>
 				<SearchField />
 				<div className="justify-end"></div>

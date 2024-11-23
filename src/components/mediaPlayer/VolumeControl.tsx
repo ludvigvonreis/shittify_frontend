@@ -49,7 +49,6 @@ export default function VolumeControl() {
 		mediaAtom.queue.length === 0
 			? "text-slate-600 hover:text-slate-600 cursor-default"
 			: queueButtonColor;
-	console.log(mediaAtom.queue.length);
 
 	return (
 		<div className="flex justify-end items-center mr-5 gap-2">
