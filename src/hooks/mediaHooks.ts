@@ -2,9 +2,11 @@ import { MediaAtom, ProgressAtom, TogglesAtom } from "@atoms/MediaPlayerAtoms";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 export function useAddToQueue() {
-	const setMediaAtom = useSetAtom(MediaAtom);
+	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
 
 	return (track: Track, changeToTrack = false) => {
+		if (mediaAtom.queue.includes(track)) return;
+
 		setMediaAtom((mediaAtom) => {
 			return {
 				...mediaAtom,
@@ -14,21 +16,25 @@ export function useAddToQueue() {
 					: mediaAtom.queueIndex,
 			};
 		});
-		
 	};
 }
 
 export function useSetQueue() {
 	const setMediaAtom = useSetAtom(MediaAtom);
 	const setProgressAtom = useSetAtom(ProgressAtom);
+	const setTogglesAtom = useSetAtom(TogglesAtom);
 
-	return (tracks: Track[]) => {
+	return (tracks: Track[], startPlay = false) => {
 		setMediaAtom((mediaAtom) => {
 			return { ...mediaAtom, queue: [...tracks], queueIndex: 0 };
 		});
 
 		setProgressAtom((progressAtom) => {
 			return { ...progressAtom, progress: 0, isProgressChanged: true };
+		});
+
+		setTogglesAtom((toggles) => {
+			return { ...toggles, isPlaying: startPlay };
 		});
 	};
 }

@@ -30,7 +30,7 @@ export default function CurrentTrack(props: CurrentTrackProps) {
 					className="absolute w-full h-full top-0"
 					onClick={(e) => {
 						e.stopPropagation();
-						setIsFoldActive((isFoldActive: boolean) => mediaAtom.queue.length > 0 ? !isFoldActive : false);
+						setIsFoldActive((isFoldActive: boolean) => mediaAtom.queue.length > 1 ? !isFoldActive : false);
 					}}
 				/>
 				<img

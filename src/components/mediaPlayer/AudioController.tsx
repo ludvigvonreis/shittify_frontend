@@ -26,6 +26,7 @@ export default function AudioController() {
 		const audioElm = new Audio(currentTrack ? currentTrack.path : "");
 		audioElm.autoplay = mediaToggles.isPlaying;
 		audioElm.load();
+		audioElm.volume = volumeAtom;
 
 		audioElm.addEventListener("canplay", () => {
 			setIsReady(true);

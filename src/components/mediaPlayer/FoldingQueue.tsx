@@ -16,12 +16,9 @@ export default function FoldingQueue() {
 	const [isActive, setIsActive] = useAtom(foldAtom);
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const selectedRef = useRef<HTMLLIElement | null>(null);
-	//const maxHeight = (window.innerHeight * 50) / 100;
 
 	const animation = useSpring({
-		/*maxheight: isActive
-			? Math.min(divRef.current?.scrollHeight || 0, maxHeight)
-			: 0,*/
+		transform: isActive ? "translateY(0%)" : "translateY(-5%)",
 		opacity: isActive ? 1 : 0,
 		config: { tension: 170, friction: 26 },
 	});
@@ -124,7 +121,7 @@ export default function FoldingQueue() {
 			updatedQueueIndex -= 1;
 		}
 
-		if (newQueue.length < 1) {
+		if (newQueue.length <= 1) {
 			setIsActive(false);
 		}
 
@@ -133,14 +130,14 @@ export default function FoldingQueue() {
 			queue: newQueue,
 			queueIndex: updatedQueueIndex,
 		});
-	}
+	};
 
 	return (
 		<animated.div
 			ref={divRef}
 			className="absolute w-[30rem] rounded-md bg-slate-800 scroll-smooth
 				bottom-full mb-4 overflow-y-scroll overflow-x-hidden max-h-[30vh]"
-			style={animation}
+			style={{ ...animation, pointerEvents: isActive ? "auto" : "none" }}
 		>
 			<DragDropContext onDragEnd={handleDragEnd}>
 				<Droppable droppableId="droppable">
@@ -151,47 +148,21 @@ export default function FoldingQueue() {
 						>
 							{mediaAtom.queue.map((element, index) => {
 								return (
-									<Draggable
-										draggableId={element.name}
+									<DraggableListItem
+										key={element.name + index}
+										element={element}
 										index={index}
-										key={element.name}
-									>
-										{(provided) => (
-											<div
-												ref={provided.innerRef}
-												{...provided.draggableProps}
-												{...provided.dragHandleProps}
-												style={
-													provided.draggableProps
-														.style
-												}
-											>
-												<ListItem
-													ref={
-														index ===
-														mediaAtom.queueIndex
-															? selectedRef
-															: null
-													}
-													{...element}
-													queueIndex={
-														mediaAtom.queueIndex
-													}
-													index={index}
-													onClick={() => {
-														setQueueIndex(index);
-														setMediaToggles({
-															...mediaToggles,
-															isPlaying: true,
-														});
-													}}
-													onRemove={() => {
-														onRemoveElement(index);
-													}}
-												/>
-											</div>
-										)}
-									</Draggable>
+										queueIndex={mediaAtom.queueIndex}
+										selectedRef={selectedRef}
+										onClick={() => {
+											setQueueIndex(index);
+											setMediaToggles({
+												...mediaToggles,
+												isPlaying: true,
+											});
+										}}
+										onRemove={() => onRemoveElement(index)}
+									/>
 								);
 							})}
 							{provided.placeholder}
@@ -213,6 +184,50 @@ interface ListItemProps {
 	index: number;
 	onClick?: () => void;
 	onRemove?: () => void;
+}
+
+interface IDraggableListItem {
+	element: Track;
+	index: number;
+	queueIndex: number;
+	onClick: () => void;
+	onRemove: () => void;
+	selectedRef: Ref<HTMLLIElement>;
+}
+
+function DraggableListItem({
+	element,
+	index,
+	queueIndex,
+	onClick,
+	onRemove,
+	selectedRef,
+}: IDraggableListItem) {
+	return (
+		<Draggable
+			draggableId={element.name}
+			index={index}
+			key={element.name + index}
+		>
+			{(provided) => (
+				<div
+					ref={provided.innerRef}
+					{...provided.draggableProps}
+					{...provided.dragHandleProps}
+					style={provided.draggableProps.style}
+				>
+					<ListItem
+						ref={index === queueIndex ? selectedRef : null}
+						{...element}
+						queueIndex={queueIndex}
+						index={index}
+						onClick={onClick}
+						onRemove={onRemove}
+					/>
+				</div>
+			)}
+		</Draggable>
+	);
 }
 
 const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
@@ -257,8 +272,12 @@ const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
 					</p>
 				</div>
 				<div className="ml-auto p-2 flex flex-row gap-4">
-				<Icon type="close" className="text-slate-400 hover:text-slate-500" onClick={onRemove} />
-				<Icon type="menu" className="text-slate-400" />
+					<Icon
+						type="close"
+						className="text-slate-400 hover:text-slate-500"
+						onClick={onRemove}
+					/>
+					<Icon type="menu" className="text-slate-400" />
 				</div>
 			</li>
 		);

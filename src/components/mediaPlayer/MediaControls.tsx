@@ -54,7 +54,7 @@ export default function MediaControls() {
 				/>
 				<Icon
 					type={
-						!togglesAtom.isPlaying ? "play_circle" : "pause_circle"
+						!togglesAtom.isPlaying ? "play_arrow" : "pause"
 					}
 					className={iconClassName}
 					onClick={() =>
