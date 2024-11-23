@@ -8,7 +8,7 @@ import { twMerge } from "tailwind-merge";
 interface ITrackListItem {
 	element: Track;
 	queue: Track[];
-	currentTrack: Track;
+	currentTrack?: Track;
 	index: number;
 	onDoubleClick: () => void;
 	addToQueue: () => void;
@@ -24,7 +24,7 @@ export default function TrackListItem({
 }: ITrackListItem) {
 	const accentColor = useAtomValue(AccentColorAtom);
 
-	const isCurrentTrack = currentTrack.track_id === element.track_id;
+	const isCurrentTrack = currentTrack?.track_id === element.track_id;
 	const playPauseIcon = isCurrentTrack ? "pause" : "play_arrow";
 	const trackTextStyle = isCurrentTrack ? accentColor.text : "";
 	const isInQueue = queue.includes(element);

@@ -8,9 +8,11 @@ import {
 	CurrentTrackAtom,
 	MediaAtom,
 } from "@atoms/MediaPlayerAtoms";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { twMerge } from "tailwind-merge";
 import TrackListItem from "@components/overview/TrackListItem";
+import { ToastMessageAtom } from "@atoms/atoms";
+import { Messages } from "@utils/constants";
 
 export const Route = createFileRoute("/album/$albumid")({
 	component: RouteComponent,
@@ -37,6 +39,7 @@ function RouteComponent() {
 	const accentColor = useAtomValue(AccentColorAtom);
 	const currentTrack = useAtomValue(CurrentTrackAtom);
 	const mediaAtom = useAtomValue(MediaAtom);
+	const setToastMessage = useSetAtom(ToastMessageAtom);
 
 	data.length = data.contents.reduce((accumulator, currentValue) => {
 		return accumulator + currentValue.duration;
@@ -49,7 +52,10 @@ function RouteComponent() {
 			currentTrack={currentTrack}
 			index={index}
 			onDoubleClick={() => setQueue([element], true)}
-			addToQueue={() => addQueue(element)}
+			addToQueue={() => {
+				if (addQueue(element))
+					setToastMessage(Messages.addToQueueMessage);
+			}}
 		/>
 	));
 

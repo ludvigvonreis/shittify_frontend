@@ -1,4 +1,4 @@
-import { foldAtom } from "@atoms/atoms";
+import { FoldAtom } from "@atoms/atoms";
 import {
 	AccentColorAtom,
 	MediaAtom,
@@ -13,7 +13,7 @@ import { forwardRef, Ref, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 export default function FoldingQueue() {
-	const [isActive, setIsActive] = useAtom(foldAtom);
+	const [isActive, setIsActive] = useAtom(FoldAtom);
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const selectedRef = useRef<HTMLLIElement | null>(null);
 

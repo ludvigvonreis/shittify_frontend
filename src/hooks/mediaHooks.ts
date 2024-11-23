@@ -5,7 +5,7 @@ export function useAddToQueue() {
 	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
 
 	return (track: Track, changeToTrack = false) => {
-		if (mediaAtom.queue.includes(track)) return;
+		if (mediaAtom.queue.includes(track)) return false;
 
 		setMediaAtom((mediaAtom) => {
 			return {
@@ -16,6 +16,8 @@ export function useAddToQueue() {
 					: mediaAtom.queueIndex,
 			};
 		});
+
+		return true;
 	};
 }
 

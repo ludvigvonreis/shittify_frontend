@@ -1,3 +1,4 @@
 import { atom } from "jotai";
 
-export const foldAtom = atom(false);
+export const FoldAtom = atom(false);
+export const ToastMessageAtom = atom("");

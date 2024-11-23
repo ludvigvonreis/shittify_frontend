@@ -6,6 +6,7 @@ import { CurrentTrackAtom, MediaAtom } from "@atoms/MediaPlayerAtoms";
 import { useSetQueue } from "@hooks/mediaHooks";
 import { memo, useEffect } from "react";
 import AudioController from "./AudioController";
+import Toast from "@components/shared/Toast";
 
 function MediaPlayer() {
 	const currentTrack = useAtomValue(CurrentTrackAtom);
@@ -79,6 +80,8 @@ function MediaPlayer() {
 
 	return (
 		<footer className="w-full h-24 bg-slate-800 fixed bottom-0 grid grid-cols-4 grid-rows-1">
+			<Toast />
+
 			<CurrentTrack
 				title={currentTrack ? currentTrack.name : "Unknown"}
 				artist={currentTrack ? currentTrack.artist : "Unknown"}
