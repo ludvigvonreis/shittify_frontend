@@ -1,9 +1,12 @@
 interface Album {
-	album_id: string;
-	artist_id: string;
-	name: string;
-	release_date: string;
-	image: string;
+	length?: number; // Total length of songs in seconds
+	amount: number; // Amount of songs in album.
+	albumCoverSrc: string;
+	title: string;
+	artist: string;
+	releaseDate: string;
+	artistId: string;
+	contents: Track[];
 }
 
 interface Track {

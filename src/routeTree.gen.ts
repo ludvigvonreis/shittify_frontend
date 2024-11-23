@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as SearchIndexImport } from './routes/search/index'
 import { Route as SearchQueryImport } from './routes/search/$query'
+import { Route as AlbumAlbumidImport } from './routes/album/$albumid'
 
 // Create/Update Routes
 
@@ -35,6 +36,12 @@ const SearchQueryRoute = SearchQueryImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AlbumAlbumidRoute = AlbumAlbumidImport.update({
+  id: '/album/$albumid',
+  path: '/album/$albumid',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -44,6 +51,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/album/$albumid': {
+      id: '/album/$albumid'
+      path: '/album/$albumid'
+      fullPath: '/album/$albumid'
+      preLoaderRoute: typeof AlbumAlbumidImport
       parentRoute: typeof rootRoute
     }
     '/search/$query': {
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/album/$albumid': typeof AlbumAlbumidRoute
   '/search/$query': typeof SearchQueryRoute
   '/search': typeof SearchIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/album/$albumid': typeof AlbumAlbumidRoute
   '/search/$query': typeof SearchQueryRoute
   '/search': typeof SearchIndexRoute
 }
@@ -80,27 +96,30 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/album/$albumid': typeof AlbumAlbumidRoute
   '/search/$query': typeof SearchQueryRoute
   '/search/': typeof SearchIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/search/$query' | '/search'
+  fullPaths: '/' | '/album/$albumid' | '/search/$query' | '/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search/$query' | '/search'
-  id: '__root__' | '/' | '/search/$query' | '/search/'
+  to: '/' | '/album/$albumid' | '/search/$query' | '/search'
+  id: '__root__' | '/' | '/album/$albumid' | '/search/$query' | '/search/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AlbumAlbumidRoute: typeof AlbumAlbumidRoute
   SearchQueryRoute: typeof SearchQueryRoute
   SearchIndexRoute: typeof SearchIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AlbumAlbumidRoute: AlbumAlbumidRoute,
   SearchQueryRoute: SearchQueryRoute,
   SearchIndexRoute: SearchIndexRoute,
 }
@@ -116,12 +135,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/album/$albumid",
         "/search/$query",
         "/search/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/album/$albumid": {
+      "filePath": "album/$albumid.tsx"
     },
     "/search/$query": {
       "filePath": "search/$query.tsx"
