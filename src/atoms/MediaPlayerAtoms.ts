@@ -24,4 +24,6 @@ export const CurrentTrackAtom = atom((get) => {
 	return queue[queueIndex] || null;
 });
 
+export const MediaNodesAtom = atom<React.MutableRefObject<IMediaNodes | null | undefined> | null>();
+
 export const AccentColorAtom = atomWithStorage('accent-color', { text: "text-rose-400", bg: "bg-rose-400" });

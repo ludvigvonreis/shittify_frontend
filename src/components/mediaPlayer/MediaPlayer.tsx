@@ -93,7 +93,7 @@ function MediaPlayer() {
 			/>
 			<MediaControls />
 			<VolumeControl />
-			<AudioController />
+			<AudioController src={currentTrack ? currentTrack.path : ""} />
 		</footer>
 	);
 }

@@ -1,107 +1,128 @@
 import {
-	CurrentTrackAtom,
-	MediaAtom,
+	MediaNodesAtom,
 	ProgressAtom,
 	TogglesAtom,
 	VolumeAtom,
 } from "@atoms/MediaPlayerAtoms";
-import { useOnTrackEnd } from "@hooks/mediaHooks";
-import { useAtom, useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useRef, useState } from "react";
 
+interface AudioControllerProps {
+	src: string;
+}
 
-export default function AudioController() {
-	const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
+export default function AudioController(props: AudioControllerProps) {
+	const audioContext = useRef<AudioContext | null>();
+
+	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const [isReady, setIsReady] = useState(false);
 
-	const [mediaProgress, setMediaProgress] = useAtom(ProgressAtom);
-	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
-	const volumeAtom = useAtomValue(VolumeAtom);
+	// Atoms
 	const mediaToggles = useAtomValue(TogglesAtom);
-	const currentTrack = useAtomValue(CurrentTrackAtom);
+	const volumeAtom = useAtomValue(VolumeAtom);
+	const [mediaProgress, setMediaProgress] = useAtom(ProgressAtom);
 
-	const onTrackEnd = useOnTrackEnd();
+	// Media nodes (audio filters)
+	const mediaNodes = useRef<IMediaNodes | null>();
+	const setMediaNodesAtom = useSetAtom(MediaNodesAtom);
 
 	useEffect(() => {
-		const audioElm = new Audio(currentTrack ? currentTrack.path : "");
-		audioElm.autoplay = mediaToggles.isPlaying;
-		audioElm.load();
-		audioElm.volume = volumeAtom;
+		setMediaNodesAtom(mediaNodes);
+	}, [setMediaNodesAtom]);
 
-		audioElm.addEventListener("canplay", () => {
-			setIsReady(true);
-		});
+	// Initialized audio context.
+	useEffect(() => {
+		if (!audioRef.current) return;
 
-		audioElm.addEventListener("timeupdate", () => {
-			setMediaProgress({
-				isProgressChanged: false,
-				progress: audioElm.currentTime,
-			});
-		});
+		const context = new AudioContext();
+		const buffer = context.createMediaElementSource(audioRef.current);
 
-		audioElm.addEventListener("ended", () => {
-			onTrackEnd();
-		});
+		// Create a gain node
+		const gainNode = context.createGain();
+		gainNode.gain.value = volumeAtom || 1;
 
-		setAudioRef(audioElm);
+		// Connect the buffer to the gain node
+		buffer.connect(gainNode);
+
+		// Connect the gain node to the context's destination
+		gainNode.connect(context.destination);
+
+		mediaNodes.current = {
+			gainNode: gainNode,
+		};
+
+		audioContext.current = context;
 
 		return () => {
-			setAudioRef(null);
-			audioElm.src = "";
+			context.close();
+		};
+	}, [audioRef.current]);
+
+	// React to play / pause.
+	useEffect(() => {
+		if (!audioContext.current) return;
+		if (!audioRef.current) return;
+		if (!isReady) return;
+
+		const context = audioContext.current;
+		const audioElement = audioRef.current;
+
+		// Resume the AudioContext if it's in a suspended state
+		if (context.state === "suspended") {
+			context.resume().then(() => {
+				console.debug("AudioContext resumed");
+			});
 		}
 
-	}, [currentTrack ? currentTrack.path : ""]);
-
-	useEffect(() => {
-		if (audioRef === null) return;
-		if (isReady === false) return;
-
-		// Set duration to loaded duration from mp3.
-		const updatedQueue = mediaAtom.queue.map((item, idx) =>
-			idx === mediaAtom.queueIndex
-				? { ...item, duration: audioRef.duration } // Update the targeted element
-				: item // Leave other elements unchanged
-		);
-
-		setMediaAtom({...mediaAtom, queue: updatedQueue});
-	}, [isReady])
-
-
-	useEffect(() => {
-		if (audioRef === null) return;
-		if (isReady === false) return;
-
-		if (mediaToggles.isPlaying) {
-			audioRef.play().catch((e) => {
-				console.error("Audio error: ", e);
+		if (mediaToggles.isPlaying === true) {
+			audioElement.play().catch((e) => {
+				console.error("Error playing audio:", e);
 			});
 		} else {
-			audioRef.pause();
+			audioElement.pause();
 		}
-	}, [mediaToggles.isPlaying]);
+	}, [mediaToggles.isPlaying, isReady]);
 
+	// React to volume changes
 	useEffect(() => {
-		if (audioRef === null) return;
+		if (!mediaNodes.current) return;
 
-		if (mediaProgress.isProgressChanged == true) {
-			audioRef.currentTime = mediaProgress.progress;
-			setMediaProgress({ ...mediaProgress, isProgressChanged: false });
-		}
-	}, [mediaProgress.isProgressChanged]);
-
-	useEffect(() => {
-		if (audioRef === null) return;
-
-		audioRef.volume = volumeAtom;
+		mediaNodes.current.gainNode.gain.value = volumeAtom;
 	}, [volumeAtom]);
 
-	useEffect(() => {
-		if (mediaToggles.isPlaying) {
-			audioRef?.play();
-		} else {
-			audioRef?.pause();
-		}
-	}, [mediaAtom.queueIndex])
+	// React to audio time updating
+	function onTimeUpdate() {
+		if (!audioRef.current) return;
 
-	return <></>;
+		setMediaProgress({
+			...mediaProgress,
+			isProgressChanged: false,
+			progress: audioRef.current.currentTime,
+		});
+	}
+
+	// React to outside progress changing, ie: progress bar skipping.
+	useEffect(() => {
+		if (mediaProgress.isProgressChanged === false) return;
+		if (!audioRef.current) return;
+
+		audioRef.current.currentTime = mediaProgress.progress;
+	}, [mediaProgress]);
+
+	if (props.src === "") return;
+
+	return (
+		<audio
+			ref={audioRef}
+			autoPlay={mediaToggles.isPlaying}
+			src={props.src} // Replace with your default audio file
+			onCanPlay={() => {
+				setIsReady(true);
+			}}
+			onError={(e) => console.log(e)}
+			onTimeUpdate={onTimeUpdate}
+			preload="metadata" // Preload metadata for duration
+			crossOrigin="anonymous"
+		></audio>
+	);
 }

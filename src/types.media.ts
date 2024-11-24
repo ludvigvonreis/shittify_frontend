@@ -48,3 +48,7 @@ interface SearchResults {
 	track_index: number
 	track_path: string
 }
+
+interface IMediaNodes {
+	gainNode: GainNode;
+}
