@@ -51,4 +51,5 @@ interface SearchResults {
 
 interface IMediaNodes {
 	gainNode: GainNode;
+	analyzerNode: AnalyserNode;
 }
