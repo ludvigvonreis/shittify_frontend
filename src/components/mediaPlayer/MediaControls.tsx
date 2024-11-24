@@ -6,7 +6,7 @@ import {
 } from "@atoms/MediaPlayerAtoms";
 import Icon from "@components/shared/Icon";
 import ProgressBar from "@components/shared/ProgressBar";
-import { useSetQueueIndex } from "@hooks/mediaHooks";
+import { useSetQueueIndex, useShuffleQueue } from "@hooks/mediaHooks";
 import { secondsToClockFormat } from "@utils/time";
 import { useAtom, useAtomValue } from "jotai";
 import { twMerge } from "tailwind-merge";
@@ -18,6 +18,7 @@ export default function MediaControls() {
 	const accentColor = useAtomValue(AccentColorAtom);
 
 	const setQueueIndex = useSetQueueIndex();
+	const shuffleQueue = useShuffleQueue();
 
 	const duration = currentTrack ? currentTrack.duration : 0;
 
@@ -37,12 +38,14 @@ export default function MediaControls() {
 				<Icon
 					type="shuffle"
 					className={twMerge(sideIconsClassName, shuffleColor)}
-					onClick={() =>
+					onClick={() => {
 						setTogglesAtom({
 							...togglesAtom,
 							isShuffle: !togglesAtom.isShuffle,
-						})
-					}
+						});
+
+						if (togglesAtom.isShuffle === true) shuffleQueue();
+					}}
 				/>
 				<Icon
 					type="fast_rewind"
@@ -53,9 +56,7 @@ export default function MediaControls() {
 					}}
 				/>
 				<Icon
-					type={
-						!togglesAtom.isPlaying ? "play_arrow" : "pause"
-					}
+					type={!togglesAtom.isPlaying ? "play_arrow" : "pause"}
 					className={iconClassName}
 					onClick={() =>
 						setTogglesAtom({

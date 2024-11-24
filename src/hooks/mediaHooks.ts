@@ -96,3 +96,28 @@ export function useOnTrackEnd() {
 		setMediaAtom({ ...mediaAtom, queueIndex: newIndex });
 	};
 }
+
+export function useShuffleQueue() {
+	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
+
+	return () => {
+		const fixedIndex = mediaAtom.queueIndex;
+		// Copy the original array to avoid mutating it
+		const result = [...mediaAtom.queue];
+
+		// Remove the fixed element
+		const fixedElement = result[fixedIndex];
+		result.splice(fixedIndex, 1);
+		
+		// Shuffle the remaining elements
+		for (let i = result.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[result[i], result[j]] = [result[j], result[i]];
+		}
+		
+		// Reinsert the fixed element at its original position
+		result.splice(fixedIndex, 0, fixedElement);
+
+		setMediaAtom({...mediaAtom, queue: result});
+	}
+}

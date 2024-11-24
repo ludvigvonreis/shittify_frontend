@@ -9,7 +9,7 @@ interface AudioVizualizerProps {
 export default function AudioVizualizer(props: AudioVizualizerProps) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const bufferLength = 5;
-	const dataArray = new Uint8Array(bufferLength);
+	const dataArray = useRef(new Uint8Array(bufferLength));
 	const previousHeights = useRef(new Array(bufferLength).fill(0));
 
 	const mediaNodes = useAtomValue(MediaNodesAtom);
@@ -23,7 +23,7 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 
 		const animate = () => {
 			requestAnimationFrame(animate);
-			analyser.getByteFrequencyData(dataArray);
+			analyser.getByteFrequencyData(dataArray.current);
 
 			if (ctx && canvas) {
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -33,7 +33,7 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 
 				// Draw bars with smoothing
 				for (let i = 0; i < bufferLength; i++) {
-					const targetHeight = dataArray[i];
+					const targetHeight = dataArray.current[i];
 
 					// Apply linear interpolation to smooth the transition between the current and previous height
 					const smoothingFactor = 0.1; // Higher value = less smoothing (faster)
@@ -49,13 +49,13 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 
 					// Set the color of the bars
 					//ctx.fillStyle = `rgb(${smoothedHeight + 100}, 50, 50)`;
-					ctx.fillStyle = "rgb(0,255,0)"
+					ctx.fillStyle = "rgb(0,255,0)";
 					ctx.fillRect(x, y, barWidth, smoothedHeight);
 				}
 			}
 		};
-		
-		animate();
+
+		requestAnimationFrame(animate);
 	}, []);
 
 	return (
