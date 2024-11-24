@@ -19,7 +19,7 @@ export default function VolumeControl() {
 
 	// Muting
 	const [lastVolume, setLastVolume] = useState(0);
-	const [isMuted, setIsMuted] = useState(volumeAtom === 0);
+	const [isMuted, setIsMuted] = useState(volumeAtom == 0);
 
 	function onMute() {
 		if (isMuted) {
@@ -32,14 +32,9 @@ export default function VolumeControl() {
 		}
 	}
 
-	let icon =
-		volumeAtom > 0.1
-			? volumeAtom > 0.5
-				? "volume_up"
-				: "volume_down"
-			: "volume_mute";
+	let icon = volumeAtom > 0.5 ? "volume_up" : "volume_down";
 
-	icon = isMuted ? "volume_off" : icon;
+	icon = volumeAtom == 0 ? "volume_off" : icon;
 
 	let queueButtonColor = isFoldActive
 		? `${accentColor.text} hover:${accentColor.text}`

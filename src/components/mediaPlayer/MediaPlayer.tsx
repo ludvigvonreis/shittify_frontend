@@ -13,7 +13,7 @@ function MediaPlayer() {
 
 	const setQueue = useSetQueue();
 
-	useEffect(() => {
+	/*useEffect(() => {
 		setQueue([
 			{
 				artist_id: "",
@@ -76,7 +76,7 @@ function MediaPlayer() {
 				path: "http://localhost:3000/v1/static/tracks/QKxnyaP1qvrIMGu4AxKfD.mp3",
 			},
 		]);
-	}, []);
+	}, []);*/
 
 	return (
 		<footer className="w-full h-24 bg-slate-800 fixed bottom-0 grid grid-cols-4 grid-rows-1">

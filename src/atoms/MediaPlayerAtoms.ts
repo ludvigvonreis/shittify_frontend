@@ -3,7 +3,7 @@ import { atomWithStorage } from "jotai/utils";
 
 export const ProgressAtom = atom({
 	progress: 0,
-	isProgressChanged: false,
+	isProgressChanged: false
 });
 
 export const VolumeAtom = atomWithStorage('volume', 1);
@@ -14,7 +14,7 @@ export const TogglesAtom = atomWithStorage('toggles', {
 	isShuffle: false,
 });
 
-export const MediaAtom = atom({
+export const MediaAtom = atomWithStorage("queue", {
 	queue: [] as Track[],
 	queueIndex: 0,
 })

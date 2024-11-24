@@ -4,6 +4,7 @@ import {
 	TogglesAtom,
 	VolumeAtom,
 } from "@atoms/MediaPlayerAtoms";
+import { useSetQueueIndex } from "@hooks/mediaHooks";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
@@ -18,9 +19,12 @@ export default function AudioController(props: AudioControllerProps) {
 	const [isReady, setIsReady] = useState(false);
 
 	// Atoms
-	const mediaToggles = useAtomValue(TogglesAtom);
+	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 	const volumeAtom = useAtomValue(VolumeAtom);
 	const [mediaProgress, setMediaProgress] = useAtom(ProgressAtom);
+
+	// Hooks
+	const setQueueIndex = useSetQueueIndex();
 
 	// Media nodes (audio filters)
 	const mediaNodes = useRef<IMediaNodes | null>();
@@ -37,18 +41,31 @@ export default function AudioController(props: AudioControllerProps) {
 		const context = new AudioContext();
 		const buffer = context.createMediaElementSource(audioRef.current);
 
+		// Loading progress that was saved from last "page reload" or something like that
+		const progressSaved = Number(
+			localStorage.getItem("progress_saved") || 0
+		);
+		setMediaProgress({
+			...mediaProgress,
+			progress: progressSaved,
+			isProgressChanged: true,
+		});
+
 		// Create a gain node
 		const gainNode = context.createGain();
 		gainNode.gain.value = volumeAtom || 1;
 
-		// Connect the buffer to the gain node
-		buffer.connect(gainNode);
+		const analyzer = context.createAnalyser();
 
-		// Connect the gain node to the context's destination
-		gainNode.connect(context.destination);
+		// Connect the nodes to the destination.
+		buffer
+			.connect(analyzer) // connect analyzer
+			.connect(gainNode) // connect gain
+			.connect(context.destination);
 
 		mediaNodes.current = {
 			gainNode: gainNode,
+			analyzerNode: analyzer,
 		};
 
 		audioContext.current = context;
@@ -93,21 +110,45 @@ export default function AudioController(props: AudioControllerProps) {
 	// React to audio time updating
 	function onTimeUpdate() {
 		if (!audioRef.current) return;
+		if (!isReady) return;
 
 		setMediaProgress({
 			...mediaProgress,
 			isProgressChanged: false,
 			progress: audioRef.current.currentTime,
 		});
+		localStorage.setItem(
+			"progress_saved",
+			audioRef.current.currentTime.toString()
+		);
 	}
 
 	// React to outside progress changing, ie: progress bar skipping.
 	useEffect(() => {
 		if (mediaProgress.isProgressChanged === false) return;
 		if (!audioRef.current) return;
+		if (!isReady) return;
 
 		audioRef.current.currentTime = mediaProgress.progress;
+		setMediaProgress({ ...mediaProgress, isProgressChanged: false });
+		localStorage.setItem(
+			"progress_saved",
+			mediaProgress.progress.toString()
+		);
 	}, [mediaProgress]);
+
+	/*useEffect(() => {
+		if ("mediaSession" in navigator) {
+			navigator.mediaSession.setActionHandler("previoustrack", () => {
+				console.log("prevtrack");
+				setQueueIndex(-1, true);
+			});
+			navigator.mediaSession.setActionHandler("nexttrack", () => {
+				console.log("nexttrack");
+				setQueueIndex(1, true);
+			});
+		}
+	}, []);*/
 
 	if (props.src === "") return;
 
@@ -116,13 +157,21 @@ export default function AudioController(props: AudioControllerProps) {
 			ref={audioRef}
 			autoPlay={mediaToggles.isPlaying}
 			src={props.src} // Replace with your default audio file
+			preload="metadata" // Preload metadata for duration
+			crossOrigin="anonymous"
 			onCanPlay={() => {
 				setIsReady(true);
 			}}
 			onError={(e) => console.log(e)}
 			onTimeUpdate={onTimeUpdate}
-			preload="metadata" // Preload metadata for duration
-			crossOrigin="anonymous"
+			// Handle outside forces pausing/playing and make the
+			// local state reflect this change
+			onPlay={() => {
+				setMediaToggles({ ...mediaToggles, isPlaying: true });
+			}}
+			onPause={() => {
+				setMediaToggles({ ...mediaToggles, isPlaying: false });
+			}}
 		></audio>
 	);
 }
