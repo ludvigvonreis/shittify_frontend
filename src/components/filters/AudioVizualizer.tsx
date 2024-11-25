@@ -1,6 +1,6 @@
-import { MediaNodesAtom } from "@atoms/MediaPlayerAtoms";
+import { AccentColorAtom, MediaNodesAtom } from "@atoms/MediaPlayerAtoms";
 import { useAtomValue } from "jotai";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AudioVizualizerProps {
 	className: string;
@@ -8,11 +8,22 @@ interface AudioVizualizerProps {
 
 export default function AudioVizualizer(props: AudioVizualizerProps) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const bufferLength = 5;
+	const dummyDivRef = useRef<HTMLDivElement | null>(null);
+	const bufferLength = 64;
 	const dataArray = useRef(new Uint8Array(bufferLength));
 	const previousHeights = useRef(new Array(bufferLength).fill(0));
 
 	const mediaNodes = useAtomValue(MediaNodesAtom);
+	const accentColor = useAtomValue(AccentColorAtom);
+
+	const [computedColor, setComputedColor] = useState("#00aa00");
+
+	useEffect(() => {
+		if (!dummyDivRef.current) return;
+
+		const computedColor = getComputedStyle(dummyDivRef.current).backgroundColor;
+		setComputedColor(computedColor);
+	}, [accentColor])
 
 	useEffect(() => {
 		if (!mediaNodes || !mediaNodes.current) return;
@@ -20,6 +31,19 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 		const canvas = canvasRef.current;
 		const ctx = canvas?.getContext("2d");
 		const analyser = mediaNodes.current.analyzerNode;
+		analyser.fftSize = 256;
+
+		if (canvas && canvasRef.current) {
+			const dpi = window.devicePixelRatio || 1;
+
+			// Get the logical size of the canvas (CSS size)
+			const cssWidth = canvasRef.current.clientWidth;
+			const cssHeight = canvasRef.current.clientHeight;
+
+			// Use the CSS size for both rendering and display
+			canvas.width = cssWidth * dpi;
+			canvas.height = cssHeight * dpi;
+		}
 
 		const animate = () => {
 			requestAnimationFrame(animate);
@@ -45,11 +69,11 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 					previousHeights.current[i] = smoothedHeight; // Store the smoothed height for the next frame
 
 					const x = i * (barWidth + barSpacing); // Add spacing between bars
-					const y = canvas.height - smoothedHeight + 50; // Start drawing from the bottom of the canvas
+					const y = canvas.height - smoothedHeight + 20; // Start drawing from the bottom of the canvas
 
 					// Set the color of the bars
-					//ctx.fillStyle = `rgb(${smoothedHeight + 100}, 50, 50)`;
-					ctx.fillStyle = "rgb(0,255,0)";
+					//ctx.fillStyle = `rgb(0, ${smoothedHeight + 100}, 0)`;
+					ctx.fillStyle = computedColor; //"rgb(0,255,0)";
 					ctx.fillRect(x, y, barWidth, smoothedHeight);
 				}
 			}
@@ -59,11 +83,14 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 	}, []);
 
 	return (
-		<canvas
-			className={props.className}
-			ref={canvasRef}
-			width={500}
-			height={200}
-		/>
+		<>
+			<div ref={dummyDivRef} className={`${accentColor.bg} hidden`}></div>
+			<canvas
+				className={props.className}
+				ref={canvasRef}
+				width={800}
+				height={200}
+			/>
+		</>
 	);
 }
