@@ -277,7 +277,6 @@ const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
 						className="text-slate-400 hover:text-slate-500"
 						onClick={onRemove}
 					/>
-					<Icon type="menu" className="text-slate-400" />
 				</div>
 			</li>
 		);

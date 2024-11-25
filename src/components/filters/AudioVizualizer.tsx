@@ -45,7 +45,7 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 					previousHeights.current[i] = smoothedHeight; // Store the smoothed height for the next frame
 
 					const x = i * (barWidth + barSpacing); // Add spacing between bars
-					const y = canvas.height - smoothedHeight - 10; // Start drawing from the bottom of the canvas
+					const y = canvas.height - smoothedHeight + 50; // Start drawing from the bottom of the canvas
 
 					// Set the color of the bars
 					//ctx.fillStyle = `rgb(${smoothedHeight + 100}, 50, 50)`;

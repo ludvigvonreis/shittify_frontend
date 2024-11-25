@@ -101,6 +101,8 @@ export function useShuffleQueue() {
 	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
 
 	return () => {
+		if (mediaAtom.queue.length < 0) return;
+
 		const fixedIndex = mediaAtom.queueIndex;
 		// Copy the original array to avoid mutating it
 		const result = [...mediaAtom.queue];
