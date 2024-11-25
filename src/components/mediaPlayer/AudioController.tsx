@@ -164,6 +164,11 @@ export default function AudioController(props: AudioControllerProps) {
 			}}
 			onError={(e) => console.log(e)}
 			onTimeUpdate={onTimeUpdate}
+			onEnded={() => {
+				// add one to queue index when song has ended
+				setQueueIndex(1, true);
+				setMediaToggles({ ...mediaToggles, isPlaying: true });
+			}}
 			// Handle outside forces pausing/playing and make the
 			// local state reflect this change
 			onPlay={() => {
