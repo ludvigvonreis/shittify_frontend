@@ -1,13 +1,12 @@
-import {
-	Link,
-	Outlet,
-	createRootRoute,
-} from "@tanstack/react-router";
+import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import MediaPlayer from "@components/mediaPlayer/MediaPlayer";
 import SearchField from "@components/search/SearchField";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import Icon from "@components/shared/Icon";
+import { useEffect } from "react";
+import { useAtomValue } from "jotai";
+import { AccentColorAtom } from "@atoms/MediaPlayerAtoms";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -16,6 +15,15 @@ export const Route = createRootRoute({
 const queryClient = new QueryClient();
 
 function RootComponent() {
+	const accentColor = useAtomValue(AccentColorAtom);
+
+	useEffect(() => {
+		document.documentElement.style.setProperty(
+			"--accent-color",
+			accentColor
+		);
+	}, [accentColor]);
+
 	return (
 		<>
 			<nav className="w-full h-16 grid grid-cols-3 grid-rows-1">

@@ -27,10 +27,10 @@ export default function MediaControls() {
 	const sideIconsClassName =
 		"text-[2rem] cursor-pointer transition-all duration-500 ease-out";
 	const shuffleColor = togglesAtom.isShuffle
-		? accentColor.text
+		? "text-accent"
 		: "text-slate-500";
 	const loopColor = togglesAtom.isLooping
-		? accentColor.text
+		? "text-accent"
 		: "text-slate-500";
 	return (
 		<div className="col-span-2 flex justify-center items-center flex-col select-none">

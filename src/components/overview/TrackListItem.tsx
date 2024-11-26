@@ -26,7 +26,7 @@ export default function TrackListItem({
 
 	const isCurrentTrack = currentTrack?.track_id === element.track_id;
 	const playPauseIcon = isCurrentTrack ? "pause" : "play_arrow";
-	const trackTextStyle = isCurrentTrack ? accentColor.text : "";
+	const trackTextStyle = isCurrentTrack ? "text-accent" : "";
 	const isInQueue = queue.includes(element);
 
 	return (

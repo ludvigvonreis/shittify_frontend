@@ -26,4 +26,4 @@ export const CurrentTrackAtom = atom((get) => {
 
 export const MediaNodesAtom = atom<React.MutableRefObject<IMediaNodes | null | undefined> | null>();
 
-export const AccentColorAtom = atomWithStorage('accent-color', { text: "text-fuchsia-400", bg: "bg-fuchsia-400" });
+export const AccentColorAtom = atomWithStorage('accent-color', "#e879f9");

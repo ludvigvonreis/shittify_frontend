@@ -90,7 +90,7 @@ function RouteComponent() {
 			</header>
 			<Icon
 				type="play_circle"
-				className={twMerge("pl-8 text-[4rem]", accentColor.text)}
+				className="pl-8 text-[4rem] text-accent"
 				onClick={() => setQueue(data.contents, true)}
 			/>
 			<div className="text-white p-4 rounded-lg">

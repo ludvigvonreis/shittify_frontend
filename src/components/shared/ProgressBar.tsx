@@ -1,4 +1,6 @@
+import { AccentColorAtom } from "@atoms/MediaPlayerAtoms";
 import { animated, useSpring } from "@react-spring/web";
+import { useAtomValue } from "jotai";
 import { useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -31,13 +33,16 @@ export default function ProgressBar({
 	return (
 		<div
 			data-ignore-click
-			className={twMerge("w-full h-3 rounded-md bg-slate-500 overflow-clip", className)}
+			className={twMerge(
+				"w-full h-3 rounded-md bg-slate-500 overflow-clip group",
+				className
+			)}
 			onClick={onClick}
 			ref={progressRef}
 		>
 			<div
-				className="h-full rounded-md bg-white transition-all duration-100 ease-out"
-				style={{width: `${Math.min(percentage, 1) * 100}%`}}
+				className="h-full rounded-md bg-white transition-all duration-100 ease-out group-hover:bg-accent"
+				style={{ width: `${Math.min(percentage, 1) * 100}%` }}
 			></div>
 		</div>
 	);

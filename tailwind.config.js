@@ -6,6 +6,9 @@ export default {
 			fontFamily: {
 				sans: ["Roboto", "sans-serif"], // Set Roboto as the default sans-serif font
 			},
+			colors: {
+				accent: "var(--accent-color)"
+			},
 		},
 	},
 

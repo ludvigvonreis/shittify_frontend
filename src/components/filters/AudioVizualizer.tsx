@@ -6,24 +6,49 @@ interface AudioVizualizerProps {
 	className: string;
 }
 
+function BottomUp(
+	i: number,
+	barWidth: number,
+	barSpacing: number,
+	canvasHeight: number,
+	smoothedHeight: number,
+	color: string,
+	ctx: CanvasRenderingContext2D
+) {
+	const x = i * (barWidth + barSpacing);
+	const y = canvasHeight - smoothedHeight + 20;
+
+	ctx.fillStyle = color;
+	ctx.fillRect(x, y, barWidth, smoothedHeight);
+}
+
+function MiddleOut(
+	i: number,
+	barWidth: number,
+	barSpacing: number,
+	canvasHeight: number,
+	smoothedHeight: number,
+	color: string,
+	ctx: CanvasRenderingContext2D
+) {
+	const x = i * (barWidth + barSpacing);
+
+	const centerY = canvasHeight / 2;
+	const barHeight = smoothedHeight / 2;
+
+	ctx.fillStyle = color;
+	ctx.fillRect(x, centerY - barHeight, barWidth, barHeight); // Top half
+	ctx.fillRect(x, centerY, barWidth, barHeight); // Bottom half
+}
+
 export default function AudioVizualizer(props: AudioVizualizerProps) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const dummyDivRef = useRef<HTMLDivElement | null>(null);
 	const bufferLength = 64;
 	const dataArray = useRef(new Uint8Array(bufferLength));
 	const previousHeights = useRef(new Array(bufferLength).fill(0));
 
 	const mediaNodes = useAtomValue(MediaNodesAtom);
 	const accentColor = useAtomValue(AccentColorAtom);
-
-	const [computedColor, setComputedColor] = useState("#00aa00");
-
-	useEffect(() => {
-		if (!dummyDivRef.current) return;
-
-		const computedColor = getComputedStyle(dummyDivRef.current).backgroundColor;
-		setComputedColor(computedColor);
-	}, [accentColor])
 
 	useEffect(() => {
 		if (!mediaNodes || !mediaNodes.current) return;
@@ -68,13 +93,24 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 
 					previousHeights.current[i] = smoothedHeight; // Store the smoothed height for the next frame
 
-					const x = i * (barWidth + barSpacing); // Add spacing between bars
-					const y = canvas.height - smoothedHeight + 20; // Start drawing from the bottom of the canvas
-
-					// Set the color of the bars
-					//ctx.fillStyle = `rgb(0, ${smoothedHeight + 100}, 0)`;
-					ctx.fillStyle = computedColor; //"rgb(0,255,0)";
-					ctx.fillRect(x, y, barWidth, smoothedHeight);
+					/*Style2(
+						i,
+						barWidth,
+						barSpacing,
+						canvas.height,
+						smoothedHeight,
+						accentColor,
+						ctx
+					);*/
+					BottomUp(
+						i,
+						barWidth,
+						barSpacing,
+						canvas.height,
+						smoothedHeight,
+						accentColor,
+						ctx
+					);
 				}
 			}
 		};
@@ -83,14 +119,11 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 	}, []);
 
 	return (
-		<>
-			<div ref={dummyDivRef} className={`${accentColor.bg} hidden`}></div>
-			<canvas
-				className={props.className}
-				ref={canvasRef}
-				width={800}
-				height={200}
-			/>
-		</>
+		<canvas
+			className={props.className}
+			ref={canvasRef}
+			width={800}
+			height={200}
+		/>
 	);
 }

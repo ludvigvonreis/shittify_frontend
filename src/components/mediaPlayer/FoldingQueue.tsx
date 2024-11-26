@@ -262,7 +262,7 @@ const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
 					<h1
 						className={twMerge(
 							"text-lg truncate",
-							queueIndex === index ? accentColor.text : ""
+							queueIndex === index ? "text-accent" : ""
 						)}
 					>
 						{name}
