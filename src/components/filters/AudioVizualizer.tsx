@@ -93,7 +93,7 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 
 					previousHeights.current[i] = smoothedHeight; // Store the smoothed height for the next frame
 
-					/*Style2(
+					/*MiddleOut(
 						i,
 						barWidth,
 						barSpacing,

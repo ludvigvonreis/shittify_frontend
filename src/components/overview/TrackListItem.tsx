@@ -22,8 +22,6 @@ export default function TrackListItem({
 	onDoubleClick,
 	addToQueue,
 }: ITrackListItem) {
-	const accentColor = useAtomValue(AccentColorAtom);
-
 	const isCurrentTrack = currentTrack?.track_id === element.track_id;
 	const playPauseIcon = isCurrentTrack ? "pause" : "play_arrow";
 	const trackTextStyle = isCurrentTrack ? "text-accent" : "";

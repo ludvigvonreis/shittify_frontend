@@ -1,12 +1,12 @@
 import { useSpring, animated } from "@react-spring/web";
-import { MediaAtom } from "@atoms/MediaPlayerAtoms";
-import { useAtomValue, useSetAtom } from "jotai";
-import { FoldAtom } from "@atoms/atoms";
+import { Link } from "@tanstack/react-router";
 
 interface CurrentTrackProps {
 	title: string;
 	artist: string;
 	converSrc: string;
+	album_id: string;
+	artist_id: string;
 }
 
 export default function CurrentTrack(props: CurrentTrackProps) {
@@ -17,26 +17,28 @@ export default function CurrentTrack(props: CurrentTrackProps) {
 		config: { tension: 200, friction: 20, duration: 200 },
 	});
 
-	if (props.title === "Unknown") return <div></div>
+	if (props.title === "Unknown") return <div></div>;
 
 	return (
 		<div className="flex justify-start items-center p-1 gap-4 select-none relative">
-			<div
-				className="absolute w-full h-full top-0"
-			/>
+			<div className="absolute w-full h-full top-0" />
 			<img
 				src={props.converSrc}
 				alt="Uhh"
 				className="h-full aspect-square border border-slate-800 
-						rounded-md transition-transform hover:scale-105 object-cover"   
+						rounded-md transition-transform hover:scale-105 object-cover"
 			/>
 			<animated.div style={fadeIn}>
-				<h1 className="hover:underline font-medium cursor-pointer">
-					{props.title}
-				</h1>
-				<p className="hover:underline text-sm font-light text-slate-400 cursor-pointer inline-block">
-					{props.artist}
-				</p>
+				<Link to="/album/$albumid" params={{albumid: props.album_id}}>
+					<h1 className="hover:underline font-medium cursor-pointer">
+						{props.title}
+					</h1>
+				</Link>
+				<Link>
+					<p className="hover:underline text-sm font-light text-slate-400 cursor-pointer inline-block">
+						{props.artist}
+					</p>
+				</Link>
 			</animated.div>
 		</div>
 	);

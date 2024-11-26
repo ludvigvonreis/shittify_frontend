@@ -8,6 +8,8 @@ import { TogglesAtom } from "@atoms/MediaPlayerAtoms";
 import { SearchAtom } from "@components/search/SearchField";
 import { usePageTitle } from "@hooks/usePageTitle";
 import Icon from "@components/shared/Icon";
+import { Messages } from "@utils/constants";
+import { ToastMessageAtom } from "@atoms/atoms";
 
 export const Route = createFileRoute("/search/$query")({
 	component: RouteComponent,
@@ -43,6 +45,7 @@ function RouteComponent() {
 	const setQueue = useSetQueue();
 	const addToQueue = useAddToQueue();
 	const setMediaToggles = useSetAtom(TogglesAtom);
+	const setToastMessage = useSetAtom(ToastMessageAtom);
 
 	if (data.length < 1) return <>Nothing Found</>;
 
@@ -106,18 +109,20 @@ function RouteComponent() {
 									title="Add to Queue"
 									className="justify-self-center cursor-pointer ml-auto
 										text-slate-300 hover:text-inherit"
-									onClick={() =>
-										addToQueue({
-											...element,
-											artist: element.album_name,
+									onClick={() => {
+										if (addToQueue({
+											artist: element.artist_name,
 											album: element.album_name,
 											name: element.track_name,
 											duration: element.track_duration,
 											index: element.track_index,
 											path: element.track_path,
 											image: element.album_image,
-										})
-									}
+											artist_id: element.album_id,
+											album_id: element.album_id,
+											track_id: element.track_id,
+										})) setToastMessage(Messages.addToQueueMessage);
+									}}
 								>
 									<Icon type={"queue_music"} />
 								</button>

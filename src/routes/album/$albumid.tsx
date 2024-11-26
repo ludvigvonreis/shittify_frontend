@@ -39,7 +39,6 @@ function RouteComponent() {
 
 	const setQueue = useSetQueue();
 	const addQueue = useAddToQueue();
-	const accentColor = useAtomValue(AccentColorAtom);
 	const currentTrack = useAtomValue(CurrentTrackAtom);
 	const mediaAtom = useAtomValue(MediaAtom);
 	const setToastMessage = useSetAtom(ToastMessageAtom);

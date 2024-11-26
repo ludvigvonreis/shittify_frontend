@@ -37,7 +37,7 @@ export default function VolumeControl() {
 	icon = volumeAtom == 0 ? "volume_off" : icon;
 
 	let queueButtonColor = isFoldActive
-		? `${accentColor.text} hover:${accentColor.text}`
+		? `text-accent hover:text-accent`
 		: "";
 
 	queueButtonColor =

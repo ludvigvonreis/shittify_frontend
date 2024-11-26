@@ -23,9 +23,9 @@ export default function MediaControls() {
 	const duration = currentTrack ? currentTrack.duration : 0;
 
 	// Styling for icons
-	const iconClassName = "text-[2.5rem] cursor-pointer";
+	const iconClassName = "text-[2.5rem] cursor-pointer hover:scale-110 text-slate-300 hover:text-white";
 	const sideIconsClassName =
-		"text-[2rem] cursor-pointer transition-all duration-500 ease-out";
+		"text-[2rem] cursor-pointer transition-all duration-500 ease-out hover:scale-105";
 	const shuffleColor = togglesAtom.isShuffle
 		? "text-accent"
 		: "text-slate-500";
@@ -36,6 +36,7 @@ export default function MediaControls() {
 		<div className="col-span-2 flex justify-center items-center flex-col select-none">
 			<div className="grid grid-cols-5 grid-rows-1 gap-1 items-center">
 				<Icon
+					title={!togglesAtom.isShuffle ? "Shuffle Queue" : "Unshuffle Queue"}
 					type="shuffle"
 					className={twMerge(sideIconsClassName, shuffleColor)}
 					onClick={() => {
@@ -48,6 +49,7 @@ export default function MediaControls() {
 					}}
 				/>
 				<Icon
+					title="Previous"
 					type="fast_rewind"
 					className={iconClassName}
 					onClick={() => {
@@ -56,6 +58,7 @@ export default function MediaControls() {
 					}}
 				/>
 				<Icon
+					title={!togglesAtom.isPlaying ? "Play" : "Pause"}
 					type={!togglesAtom.isPlaying ? "play_arrow" : "pause"}
 					className={iconClassName}
 					onClick={() =>
@@ -66,6 +69,7 @@ export default function MediaControls() {
 					}
 				/>
 				<Icon
+					title="Next"
 					type="fast_forward"
 					className={iconClassName}
 					onClick={() => {
@@ -74,6 +78,7 @@ export default function MediaControls() {
 					}}
 				/>
 				<Icon
+					title={!togglesAtom.isLooping ? "Enable Repeat" : "Disable Repeat"}
 					type="repeat"
 					className={twMerge(sideIconsClassName, loopColor)}
 					onClick={() =>
