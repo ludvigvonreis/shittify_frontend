@@ -1,4 +1,5 @@
 import {
+	MediaAtom,
 	MediaNodesAtom,
 	ProgressAtom,
 	TogglesAtom,
@@ -21,6 +22,7 @@ export default function AudioController(props: AudioControllerProps) {
 	// Atoms
 	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 	const volumeAtom = useAtomValue(VolumeAtom);
+	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
 	const [mediaProgress, setMediaProgress] = useAtom(ProgressAtom);
 
 	// Hooks
@@ -53,7 +55,7 @@ export default function AudioController(props: AudioControllerProps) {
 
 		// Create a gain node
 		const gainNode = context.createGain();
-		gainNode.gain.value = volumeAtom || 1;
+		gainNode.gain.value = Number(localStorage.getItem("volume")) || 0;
 
 		const analyzer = context.createAnalyser();
 
@@ -99,6 +101,22 @@ export default function AudioController(props: AudioControllerProps) {
 			audioElement.pause();
 		}
 	}, [mediaToggles.isPlaying, isReady]);
+
+	useEffect(() => {
+		if (!audioRef.current) return;
+		if (!isReady) return;
+
+		const duration = audioRef.current.duration || 0;
+
+		// Set duration to loaded duration from mp3.
+		const updatedQueue = mediaAtom.queue.map((item, idx) =>
+			idx === mediaAtom.queueIndex
+				? { ...item, duration: duration } // Update the targeted element
+				: item // Leave other elements unchanged
+		);
+
+		setMediaAtom({...mediaAtom, queue: updatedQueue});
+	}, [isReady])
 
 	// React to volume changes
 	useEffect(() => {
