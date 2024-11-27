@@ -1,5 +1,4 @@
 import {
-	AccentColorAtom,
 	CurrentTrackAtom,
 	ProgressAtom,
 	TogglesAtom,
@@ -15,7 +14,6 @@ export default function MediaControls() {
 	const [progressAtom, setProgressAtom] = useAtom(ProgressAtom);
 	const [togglesAtom, setTogglesAtom] = useAtom(TogglesAtom);
 	const currentTrack = useAtomValue(CurrentTrackAtom);
-	const accentColor = useAtomValue(AccentColorAtom);
 
 	const setQueueIndex = useSetQueueIndex();
 	const shuffleQueue = useShuffleQueue();
@@ -23,20 +21,23 @@ export default function MediaControls() {
 	const duration = currentTrack ? currentTrack.duration : 0;
 
 	// Styling for icons
-	const iconClassName = "text-[2.5rem] cursor-pointer hover:scale-110 text-slate-300 hover:text-white";
+	const iconClassName =
+		"text-[2.5rem] cursor-pointer hover:scale-110 text-slate-300 hover:text-white";
 	const sideIconsClassName =
 		"text-[2rem] cursor-pointer transition-all duration-500 ease-out hover:scale-105";
 	const shuffleColor = togglesAtom.isShuffle
 		? "text-accent"
 		: "text-slate-500";
-	const loopColor = togglesAtom.isLooping
-		? "text-accent"
-		: "text-slate-500";
+	const loopColor = togglesAtom.isLooping ? "text-accent" : "text-slate-500";
 	return (
 		<div className="col-span-2 flex justify-center items-center flex-col select-none">
 			<div className="grid grid-cols-5 grid-rows-1 gap-1 items-center">
 				<Icon
-					title={!togglesAtom.isShuffle ? "Shuffle Queue" : "Unshuffle Queue"}
+					title={
+						!togglesAtom.isShuffle
+							? "Shuffle Queue"
+							: "Unshuffle Queue"
+					}
 					type="shuffle"
 					className={twMerge(sideIconsClassName, shuffleColor)}
 					onClick={() => {
@@ -78,7 +79,11 @@ export default function MediaControls() {
 					}}
 				/>
 				<Icon
-					title={!togglesAtom.isLooping ? "Enable Repeat" : "Disable Repeat"}
+					title={
+						!togglesAtom.isLooping
+							? "Enable Repeat"
+							: "Disable Repeat"
+					}
 					type="repeat"
 					className={twMerge(sideIconsClassName, loopColor)}
 					onClick={() =>
