@@ -1,5 +1,6 @@
 import { useSpring, animated } from "@react-spring/web";
 import { Link } from "@tanstack/react-router";
+import { memo } from "react";
 
 interface CurrentTrackProps {
 	title: string;
@@ -9,7 +10,7 @@ interface CurrentTrackProps {
 	artist_id: string;
 }
 
-export default function CurrentTrack(props: CurrentTrackProps) {
+function CurrentTrack(props: CurrentTrackProps) {
 	const fadeIn = useSpring({
 		from: { opacity: 0, transform: "translateY(20px)" },
 		to: { opacity: 1, transform: "translateY(0px)" },
@@ -43,3 +44,6 @@ export default function CurrentTrack(props: CurrentTrackProps) {
 		</div>
 	);
 }
+
+
+export default memo(CurrentTrack);

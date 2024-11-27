@@ -46,7 +46,7 @@ export default function VolumeControl() {
 			: queueButtonColor;
 
 	return (
-		<div className="flex justify-end items-center mr-5 gap-2">
+		<div className="flex justify-end items-center mr-5 gap-2 relative">
 			<FoldingQueue />
 			<Icon
 				title="Open Queue"

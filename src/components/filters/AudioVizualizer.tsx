@@ -43,7 +43,7 @@ function MiddleOut(
 
 export default function AudioVizualizer(props: AudioVizualizerProps) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const bufferLength = 64;
+	const bufferLength = 256;
 	const dataArray = useRef(new Uint8Array(bufferLength));
 	const previousHeights = useRef(new Array(bufferLength).fill(0));
 
@@ -56,7 +56,7 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 		const canvas = canvasRef.current;
 		const ctx = canvas?.getContext("2d");
 		const analyser = mediaNodes.current.analyzerNode;
-		analyser.fftSize = 256;
+		analyser.fftSize = 1024;
 
 		if (canvas && canvasRef.current) {
 			const dpi = window.devicePixelRatio || 1;
@@ -93,15 +93,6 @@ export default function AudioVizualizer(props: AudioVizualizerProps) {
 
 					previousHeights.current[i] = smoothedHeight; // Store the smoothed height for the next frame
 
-					/*MiddleOut(
-						i,
-						barWidth,
-						barSpacing,
-						canvas.height,
-						smoothedHeight,
-						accentColor,
-						ctx
-					);*/
 					BottomUp(
 						i,
 						barWidth,
