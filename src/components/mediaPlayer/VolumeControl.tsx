@@ -1,6 +1,7 @@
 import {
 	AccentColorAtom,
 	MediaAtom,
+	TogglesAtom,
 	VolumeAtom,
 } from "@atoms/MediaPlayerAtoms";
 import Icon from "@components/shared/Icon";
@@ -9,32 +10,32 @@ import { useAtom, useAtomValue } from "jotai";
 import FoldingQueue from "./FoldingQueue";
 import { FoldAtom } from "@atoms/atoms";
 import { twMerge } from "tailwind-merge";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function VolumeControl() {
 	const [volumeAtom, setVolumeAtom] = useAtom(VolumeAtom);
 	const [isFoldActive, setIsFoldActive] = useAtom(FoldAtom);
 	const mediaAtom = useAtomValue(MediaAtom);
-	const accentColor = useAtomValue(AccentColorAtom);
+	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 
 	// Muting
 	const [lastVolume, setLastVolume] = useState(0);
-	const [isMuted, setIsMuted] = useState(volumeAtom == 0);
 
-	function onMute() {
-		if (isMuted) {
-			setIsMuted(false);
-			setVolumeAtom(lastVolume);
+	useEffect(()=>{
+		if (mediaToggles.isMuted) {
+			//setMediaToggles({...mediaToggles, isMuted: false})
+			setVolumeAtom(lastVolume > 0 ? lastVolume : 0.5);
 		} else {
 			setLastVolume(volumeAtom);
-			setIsMuted(true);
+			//setMediaToggles({...mediaToggles, isMuted: true})
 			setVolumeAtom(0);
 		}
-	}
+	},[mediaToggles.isMuted])
+
 
 	let icon = volumeAtom > 0.5 ? "volume_up" : "volume_down";
 
-	icon = volumeAtom == 0 ? "volume_off" : icon;
+	icon = !mediaToggles.isMuted ? "volume_off" : icon;
 
 	let queueButtonColor = isFoldActive
 		? `text-accent hover:text-accent`
@@ -49,7 +50,7 @@ export default function VolumeControl() {
 		<div className="flex justify-end items-center mr-5 gap-2 relative">
 			<FoldingQueue />
 			<Icon
-				title="Open Queue"
+				title={!isFoldActive ? "Open Queue" : "Close Queue"}
 				type="queue"
 				className={twMerge(
 					"transition-colors text-slate-300 hover:text-inherit cursor-pointer",
@@ -64,9 +65,11 @@ export default function VolumeControl() {
 			/>
 			<Icon
 				type={icon}
-				title="Mute Volume"
+				title={mediaToggles.isMuted ? "Mute (m)" : "Unmute (m)"}
 				className="transition-colors text-2xl text-slate-300 hover:text-inherit cursor-pointer"
-				onClick={onMute}
+				onClick={() => 
+					setMediaToggles({...mediaToggles, isMuted: !mediaToggles.isMuted})
+				}
 			/>
 			<ProgressBar
 				percentage={volumeAtom}

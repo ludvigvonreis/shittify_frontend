@@ -12,6 +12,7 @@ export const TogglesAtom = atomWithStorage('toggles', {
 	isPlaying: false,
 	isLooping: false,
 	isShuffle: false,
+	isMuted: false,
 });
 
 export const MediaAtom = atomWithStorage("queue", {
