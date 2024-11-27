@@ -109,14 +109,15 @@ export default function AudioController(props: AudioControllerProps) {
 		const duration = audioRef.current.duration || 0;
 
 		// Set duration to loaded duration from mp3.
-		const updatedQueue = mediaAtom.queue.map((item, idx) =>
-			idx === mediaAtom.queueIndex
-				? { ...item, duration: duration } // Update the targeted element
-				: item // Leave other elements unchanged
+		const updatedQueue = mediaAtom.queue.map(
+			(item, idx) =>
+				idx === mediaAtom.queueIndex
+					? { ...item, duration: duration } // Update the targeted element
+					: item // Leave other elements unchanged
 		);
 
-		setMediaAtom({...mediaAtom, queue: updatedQueue});
-	}, [isReady])
+		setMediaAtom({ ...mediaAtom, queue: updatedQueue });
+	}, [isReady]);
 
 	// React to volume changes
 	useEffect(() => {
@@ -155,8 +156,11 @@ export default function AudioController(props: AudioControllerProps) {
 		);
 	}, [mediaProgress]);
 
-	/*useEffect(() => {
-		if ("mediaSession" in navigator) {
+	useEffect(() => {
+		// TODO: Figure out how to keep this reactive to the current queue index
+		// Right now it can skip forward one song or back one song. but its only +1 at
+		// the queue index relative to first render
+		/*if ("mediaSession" in navigator) {
 			navigator.mediaSession.setActionHandler("previoustrack", () => {
 				console.log("prevtrack");
 				setQueueIndex(-1, true);
@@ -165,8 +169,50 @@ export default function AudioController(props: AudioControllerProps) {
 				console.log("nexttrack");
 				setQueueIndex(1, true);
 			});
+		}*/
+
+		function handleInput(event: KeyboardEvent) {
+			const target = event.target as HTMLElement;
+			const isInputFocused =
+				target.tagName === "INPUT" ||
+				target.tagName === "TEXTAREA" ||
+				target.tagName === "SELECT" ||
+				target.isContentEditable; // For contenteditable divs
+
+			if (isInputFocused) return;
+
+			switch (event.code) {
+				case "Space":
+					event.preventDefault();
+					setMediaToggles((toggles) => {
+						return {
+							...mediaToggles,
+							isPlaying: !toggles.isPlaying,
+						};
+					});
+					break;
+
+				case "KeyM":
+					event.preventDefault();
+					setMediaToggles((toggles) => {
+						return { ...mediaToggles, isMuted: !toggles.isMuted };
+					});
+					break;
+
+				// Add other cases here if needed (e.g., other keys you want to handle)
+
+				default:
+					// Optionally handle default case if needed
+					break;
+			}
 		}
-	}, []);*/
+
+		document.addEventListener("keydown", handleInput);
+
+		return () => {
+			document.removeEventListener("keydown", handleInput);
+		};
+	}, []);
 
 	if (props.src === "") return;
 
