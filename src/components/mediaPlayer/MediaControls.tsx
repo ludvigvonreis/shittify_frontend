@@ -6,6 +6,7 @@ import {
 import Icon from "@components/shared/Icon";
 import ProgressBar from "@components/shared/ProgressBar";
 import { useSetQueueIndex, useShuffleQueue } from "@hooks/mediaHooks";
+import { useSpring } from "@react-spring/web";
 import { secondsToClockFormat } from "@utils/time";
 import { useAtom, useAtomValue } from "jotai";
 import { twMerge } from "tailwind-merge";
@@ -20,9 +21,19 @@ export default function MediaControls() {
 
 	const duration = currentTrack ? currentTrack.duration : 0;
 
+	const paths = {
+		iconA: "M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z",
+  		iconB: "M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"
+	};
+
+	const { d } = useSpring({
+		d: togglesAtom.isPlaying ? paths.iconB : paths.iconA,
+		config: { duration: 100 },
+	});
+
 	// Styling for icons
 	const iconClassName =
-		"text-[2.5rem] cursor-pointer hover:scale-110 text-slate-300 hover:text-white";
+		"text-[2.5rem] cursor-pointer text-slate-300 hover:text-white";
 	const sideIconsClassName =
 		"text-[2rem] cursor-pointer transition-all duration-500 ease-out hover:scale-105";
 	const shuffleColor = togglesAtom.isShuffle
@@ -58,10 +69,11 @@ export default function MediaControls() {
 						setQueueIndex(-1, true);
 					}}
 				/>
-				<Icon
-					title={!togglesAtom.isPlaying ? "Play" : "Pause"}
-					type={!togglesAtom.isPlaying ? "play_arrow" : "pause"}
-					className={iconClassName}
+				<Icon.SVG
+					title={!togglesAtom.isPlaying ? "Play (space)" : "Pause (space)"}
+					path={d}
+					viewBox="0 0 36 36"
+					className="size-[2.5rem] scale-125 cursor-pointer fill-slate-300 hover:fill-white"
 					onClick={() =>
 						setTogglesAtom({
 							...togglesAtom,
