@@ -19,6 +19,7 @@ export default function AudioController(props: AudioControllerProps) {
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const [isReady, setIsReady] = useState(false);
 
+
 	// Atoms
 	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 	const volumeAtom = useAtomValue(VolumeAtom);
@@ -31,6 +32,9 @@ export default function AudioController(props: AudioControllerProps) {
 	// Media nodes (audio filters)
 	const mediaNodes = useRef<IMediaNodes | null>();
 	const setMediaNodesAtom = useSetAtom(MediaNodesAtom);
+
+	// Ref for queue index, used as a bit of a hack.
+	const queueIndexRef = useRef(mediaAtom.queueIndex);
 
 	useEffect(() => {
 		setMediaNodesAtom(mediaNodes);
@@ -157,19 +161,22 @@ export default function AudioController(props: AudioControllerProps) {
 	}, [mediaProgress]);
 
 	useEffect(() => {
+	  queueIndexRef.current = mediaAtom.queueIndex;
+	}, [mediaAtom.queueIndex]);
+
+	useEffect(() => {
+		// SOLVED BUT FEELS LIKE HACK
 		// TODO: Figure out how to keep this reactive to the current queue index
 		// Right now it can skip forward one song or back one song. but its only +1 at
 		// the queue index relative to first render
-		/*if ("mediaSession" in navigator) {
+		if ("mediaSession" in navigator) {
 			navigator.mediaSession.setActionHandler("previoustrack", () => {
-				console.log("prevtrack");
-				setQueueIndex(-1, true);
+				setQueueIndex(queueIndexRef.current - 1, false);
 			});
 			navigator.mediaSession.setActionHandler("nexttrack", () => {
-				console.log("nexttrack");
-				setQueueIndex(1, true);
+				setQueueIndex(queueIndexRef.current + 1, false);
 			});
-		}*/
+		}
 
 		function handleInput(event: KeyboardEvent) {
 			const target = event.target as HTMLElement;

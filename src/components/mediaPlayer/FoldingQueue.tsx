@@ -28,7 +28,7 @@ export default function FoldingQueue() {
 	const animation = useSpring({
 		transform: isActive ? "translateY(0%)" : "translateY(-5%)",
 		opacity: isActive ? 1 : 0,
-		config: { tension: 170, friction: 26 },
+		config: { tension: 170, friction: 26, duration: 100 },
 	});
 
 	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
@@ -90,14 +90,15 @@ export default function FoldingQueue() {
 	return (
 		<animated.div
 			className="absolute w-[30rem] rounded-md bg-slate-800 z-50
-			bottom-full mb-4 overflow-y-scroll overflow-x-hidden max-h-[30vh]"
+			bottom-full mb-4 overflow-y-scroll overflow-x-hidden max-h-[50vh]"
 			style={{ ...animation, pointerEvents: isActive ? "auto" : "none" }}
 			ref={divRef}
 		>
 			<ReactSortable
 				list={mappedQueue}
 				onEnd={(evt) => {
-					if (!evt.oldIndex || !evt.newIndex) return;
+					if (evt.oldIndex === undefined || evt.newIndex === undefined) return;
+
 
 					let updatedQueueIndex = mediaAtom.queueIndex;
 
@@ -164,6 +165,7 @@ function QueueItem(props: IQueueItem) {
 		<div
 			className="bg-slate-800 rounded-md h-16 flex flex-row items-center gap-3 p-1"
 			onDoubleClick={props.onClick}
+			key={props.name}
 		>
 			<img
 				src={props.image}
