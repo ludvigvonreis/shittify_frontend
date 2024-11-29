@@ -19,15 +19,13 @@ export default function VolumeControl() {
 	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 
 	// Muting
-	const [lastVolume, setLastVolume] = useState(0);
+	const [lastVolume, setLastVolume] = useState(0.5);
 
 	useEffect(()=>{
 		if (mediaToggles.isMuted) {
-			//setMediaToggles({...mediaToggles, isMuted: false})
 			setVolumeAtom(lastVolume > 0 ? lastVolume : 0.5);
 		} else {
 			setLastVolume(volumeAtom);
-			//setMediaToggles({...mediaToggles, isMuted: true})
 			setVolumeAtom(0);
 		}
 	},[mediaToggles.isMuted])

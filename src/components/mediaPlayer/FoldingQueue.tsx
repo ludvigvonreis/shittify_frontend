@@ -138,6 +138,7 @@ export default function FoldingQueue() {
 				{mediaAtom.queue.map((element, idx) => {
 					return (
 						<QueueItem
+							key={element.track_id}
 							image={element.image}
 							album={element.album}
 							name={element.name}
@@ -165,7 +166,6 @@ function QueueItem(props: IQueueItem) {
 		<div
 			className="bg-slate-800 rounded-md h-16 flex flex-row items-center gap-3 p-1"
 			onDoubleClick={props.onClick}
-			key={props.name}
 		>
 			<img
 				src={props.image}

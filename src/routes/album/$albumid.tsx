@@ -43,7 +43,7 @@ function RouteComponent() {
 	const mediaAtom = useAtomValue(MediaAtom);
 	const setToastMessage = useSetAtom(ToastMessageAtom);
 
-	data.length = data.contents.reduce((accumulator, currentValue) => {
+	data.length = data.contents.reduce((accumulator: number, currentValue) => {
 		return accumulator + currentValue.duration;
 	}, 0);
 
