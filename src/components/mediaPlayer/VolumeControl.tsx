@@ -23,17 +23,17 @@ export default function VolumeControl() {
 
 	useEffect(()=>{
 		if (mediaToggles.isMuted) {
-			setVolumeAtom(lastVolume > 0 ? lastVolume : 0.5);
-		} else {
 			setLastVolume(volumeAtom);
 			setVolumeAtom(0);
+		} else {
+			setVolumeAtom(lastVolume > 0 ? lastVolume : 0.5);
 		}
 	},[mediaToggles.isMuted])
 
 
 	let icon = volumeAtom > 0.5 ? "volume_up" : "volume_down";
 
-	icon = !mediaToggles.isMuted ? "volume_off" : icon;
+	icon = mediaToggles.isMuted ? "volume_off" : icon;
 
 	let queueButtonColor = isFoldActive
 		? `text-accent hover:text-accent`
@@ -73,6 +73,9 @@ export default function VolumeControl() {
 				percentage={volumeAtom}
 				onChangeProgress={(newValue) => {
 					setVolumeAtom(newValue);
+					if (newValue > 0 && mediaToggles.isMuted) {
+						setMediaToggles({...mediaToggles, isMuted: false});
+					}
 				}}
 				className="w-32 h-2"
 			/>

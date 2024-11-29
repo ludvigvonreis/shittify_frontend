@@ -1,6 +1,5 @@
 import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { secondsToClockFormat } from "@utils/time";
 import { useAddToQueue, useSetQueue } from "@hooks/mediaHooks";
 import { useAtom, useSetAtom } from "jotai";
@@ -12,23 +11,11 @@ import { Messages } from "@utils/constants";
 import { ToastMessageAtom } from "@atoms/atoms";
 import Card from "@components/search/Card";
 import { useEffect } from "react";
+import { useSearchResults } from "@hooks/searchSortingHook";
 
 export const Route = createFileRoute("/search/$query")({
 	component: RouteComponent,
 });
-
-async function getSearchResults(query: string) {
-	try {
-		const response = await fetch(
-			`http://localhost:3000/v1/search/${query}`
-		);
-		const data = (await response.json()) as SearchResults;
-
-		return data;
-	} catch (e) {
-		throw new Error("Uh Oh!");
-	}
-}
 
 function RouteComponent() {
 	const { query } = Route.useParams();
@@ -39,17 +26,13 @@ function RouteComponent() {
 		setSearch(query);
 	}
 
-	useEffect(()=> {
+	useEffect(() => {
 		return () => {
 			setSearch("");
-		}
+		};
 	}, []);
 
-	const { data, isSuccess } = useQuery({
-		queryKey: ["search", query],
-		queryFn: () => getSearchResults(query),
-		placeholderData: keepPreviousData,
-	});
+	let { data, isError, mostRelevant } = useSearchResults(query);
 
 	const setQueue = useSetQueue();
 	const addToQueue = useAddToQueue();
@@ -57,37 +40,24 @@ function RouteComponent() {
 	const setToastMessage = useSetAtom(ToastMessageAtom);
 	const navigate = useNavigate();
 
-	if (!isSuccess) return <></>;
+	if (isError) return <></>;
+	if (!data) return <></>;
 	if (data.tracks.length < 1) return <>Nothing Found</>;
+
+	if (!mostRelevant) mostRelevant = data.tracks[0];
+	console.log(mostRelevant);
 
 	return (
 		<main className="pb-24">
 			<div className="flex flex-row p-5 gap-5 select-none">
-				<div
-					className="flex bg-slate-800 w-1/3 h-64 rounded-md p-6 
-					flex-col hover:bg-slate-700 transition-colors"
-				>
-					<img
-						className="w-32 h-32 rounded-md"
-						src={data.tracks[0].album_image}
-						alt={`image of ${data.tracks[0].album_image}`}
-					/>
-					<Link className="text-3xl pt-2 truncate hover:underline">
-						{data.tracks[0].name}
-					</Link>
-					<p className="text-slate-400">
-						<span className="font-light">{"Track"}</span>
-						{" • "}
-						<Link className="hover:underline">{data.tracks[0].artist}</Link>
-					</p>
-				</div>
+				<MostRelevant data={mostRelevant} />
 				<ul className="flex flex-col w-2/3">
 					{data.tracks.slice(0, 4).map((element) => {
 						return (
 							<li
 								key={element.track_id}
 								className="hover:bg-slate-800 rounded-md h-16 flex flex-row 
-								items-center gap-3 p-1 w-ful transition-colors"
+						items-center gap-3 p-1 w-ful transition-colors"
 								onDoubleClick={() => {
 									setQueue([
 										{
@@ -116,7 +86,7 @@ function RouteComponent() {
 								<button
 									title="Add to Queue"
 									className="justify-self-center cursor-pointer ml-auto
-										text-slate-300 hover:text-inherit"
+								text-slate-300 hover:text-inherit"
 									onClick={() => {
 										if (
 											addToQueue({
@@ -180,11 +150,7 @@ function RouteComponent() {
 						className={"min-w-[14.2857%]"} // 1 / 7 to 4 dec precision
 						type={"Artist"}
 						image={element.image}
-						header={
-							<Link>
-								{element.name}
-							</Link>
-						}
+						header={<Link>{element.name}</Link>}
 						subHeader={"Artist"}
 					/>
 				))}
@@ -198,6 +164,10 @@ interface SearchRowProps {
 	title: string;
 }
 
+interface MostRelevantProps {
+	data: SearchAlbum | SearchTrack | SearchArtist;
+}
+
 function SearchRow(props: SearchRowProps) {
 	return (
 		<section className="h-max w-full select-none">
@@ -207,4 +177,51 @@ function SearchRow(props: SearchRowProps) {
 			</div>
 		</section>
 	);
+}
+
+function MostRelevant({ data }: MostRelevantProps) {
+	const renderContent = (
+		image: string,
+		name: string,
+		type: "Album" | "Artist" | "Track",
+		artist: string
+	) => (
+		<div
+			className="flex bg-slate-800/50 w-1/3 h-64 rounded-md p-6 
+					flex-col hover:bg-slate-800 transition-colors duration-300"
+		>
+			<img
+				// Make artist image a circle
+				className={`w-32 h-32 ${type !== "Artist" ? "rounded-md" : "rounded-full"}`} 
+				src={image}
+				alt={`image of ${name}`}
+			/>
+			<Link className="text-3xl pt-2 truncate hover:underline">
+				{name}
+			</Link>
+			<p className="text-slate-400">
+				<span className="font-light">{type}</span>{" "}
+				{type !== "Artist" && " • "}{" "}
+				{type !== "Artist" && <Link>{artist}</Link>}
+			</p>
+		</div>
+	);
+
+	// Type guards for identifying the specific type and rendering accordingly
+	if ("track_id" in data) {
+		// SearchTrack
+		return renderContent(data.album_image, data.name, "Album", data.artist);
+	}
+
+	if ("album_id" in data) {
+		// SearchAlbum
+		return renderContent(data.image, data.album_name, "Album", data.artist);
+	}
+
+	if ("artist_id" in data) {
+		// SearchArtist
+		return renderContent(data.image, data.name, "Artist", data.name);
+	}
+
+	return null; // In case no type matches, return nothing
 }
