@@ -33,23 +33,47 @@ interface Artist {
 	image: string;
 }
 
-interface SearchResults {
-	artist_id: string
-	artist_name: string
-	artist_image: string
-	artist_genre: string
-	album_id: string
-	album_name: string
-	release_date: string
-	album_image: string
-	track_id: string
-	track_name: string
-	track_duration: number
-	track_index: number
-	track_path: string
-}
 
 interface IMediaNodes {
 	gainNode: GainNode;
 	analyzerNode: AnalyserNode;
+}
+
+
+interface SearchResults {
+	tracks: SearchTrack[];
+	artists: SearchArtist[];
+	albums: SearchAlbum[];
+}
+
+interface SearchTrack {
+	track_id: string
+	name: string
+	duration: number
+	index: number
+	path: string
+	album: string
+	album_id: string
+	album_image: string
+	artist: string
+	artist_id: string
+	artist_image: string
+}
+
+interface SearchAlbum {
+	album_id: string
+	album_name: string
+	release_date: string
+	image: string
+	artist: string
+	artist_id: string
+	artist_image: string
+}
+
+interface SearchArtist {
+	artist_id: string
+	name: string
+	genre: string
+	image: string
+	search_tsv: string
 }

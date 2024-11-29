@@ -16,6 +16,7 @@ function RouteComponent() {
 				<div className="flex flex-row gap-2">
 					<Card
 						type={"Artist"}
+						subHeader="mijau"
 						header={"Pink Floyd"}
 						image={
 							"http://localhost:3000/v1/static/images/qbbMyMJCoxdcEjGpuQixO.png"
@@ -23,6 +24,7 @@ function RouteComponent() {
 					/>
 					<Card
 						type={"Album"}
+						subHeader="mijau"
 						header={"Dark Side Of The Moon"}
 						image={
 							"http://localhost:3000/v1/static/images/vxdbijX247MGCZnEZYUUz.png"
