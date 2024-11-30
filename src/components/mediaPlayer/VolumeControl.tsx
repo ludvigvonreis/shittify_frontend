@@ -18,18 +18,6 @@ export default function VolumeControl() {
 	const mediaAtom = useAtomValue(MediaAtom);
 	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 
-	// Muting
-	const [lastVolume, setLastVolume] = useState(0.5);
-
-	useEffect(()=>{
-		if (mediaToggles.isMuted) {
-			setLastVolume(volumeAtom);
-			setVolumeAtom(0);
-		} else {
-			setVolumeAtom(lastVolume > 0 ? lastVolume : 0.5);
-		}
-	},[mediaToggles.isMuted])
-
 
 	let icon = volumeAtom > 0.5 ? "volume_up" : "volume_down";
 
@@ -70,12 +58,10 @@ export default function VolumeControl() {
 				}
 			/>
 			<ProgressBar
-				percentage={volumeAtom}
+				percentage={mediaToggles.isMuted ? 0 : volumeAtom} // Hide progress if muted
 				onChangeProgress={(newValue) => {
 					setVolumeAtom(newValue);
-					if (newValue > 0 && mediaToggles.isMuted) {
-						setMediaToggles({...mediaToggles, isMuted: false});
-					}
+					setMediaToggles({...mediaToggles, isMuted: false})
 				}}
 				className="w-32 h-2"
 			/>

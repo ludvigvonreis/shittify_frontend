@@ -19,7 +19,6 @@ export default function AudioController(props: AudioControllerProps) {
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const [isReady, setIsReady] = useState(false);
 
-
 	// Atoms
 	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 	const volumeAtom = useAtomValue(VolumeAtom);
@@ -128,7 +127,11 @@ export default function AudioController(props: AudioControllerProps) {
 		if (!mediaNodes.current) return;
 
 		mediaNodes.current.gainNode.gain.value = volumeAtom;
-	}, [volumeAtom]);
+
+		// Muting sound if muted.
+		if (!audioRef.current) return;
+		audioRef.current.muted = mediaToggles.isMuted;
+	}, [volumeAtom, mediaToggles.isMuted]);
 
 	// React to audio time updating
 	function onTimeUpdate() {
@@ -161,7 +164,7 @@ export default function AudioController(props: AudioControllerProps) {
 	}, [mediaProgress]);
 
 	useEffect(() => {
-	  queueIndexRef.current = mediaAtom.queueIndex;
+		queueIndexRef.current = mediaAtom.queueIndex;
 	}, [mediaAtom.queueIndex]);
 
 	useEffect(() => {
