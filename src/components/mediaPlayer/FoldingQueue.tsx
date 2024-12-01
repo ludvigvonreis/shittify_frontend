@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { ReactSortable } from "react-sortablejs";
+import { useDismissOnClickOutside } from "@hooks/useDismissOnClickOutside";
 
 interface IMappedQueue {
 	artist_id: string;
@@ -34,32 +35,7 @@ export default function FoldingQueue() {
 	const [mediaAtom, setMediaAtom] = useAtom(MediaAtom);
 	const [mediaToggles, setMediaToggles] = useAtom(TogglesAtom);
 	const setQueueIndex = useSetQueueIndex();
-
-	useEffect(() => {
-		const handler = (e: MouseEvent) => {
-			const target = e.target as HTMLElement;
-
-			if (!target) return;
-
-			// Ignore if clicking on this element
-			if (divRef.current && divRef.current.contains(target as Node))
-				return;
-
-			// Check if the click is on elements with the 'data-ignore-click' attribute
-			if (target.closest("[data-ignore-click]")) {
-				return; // Ignore clicks on these elements
-			}
-
-			// Deactivate otherwise
-			setIsActive(false);
-		};
-
-		document.addEventListener("click", handler);
-
-		return () => {
-			document.removeEventListener("click", handler);
-		};
-	}, []);
+	useDismissOnClickOutside(divRef, setIsActive);
 
 	const onRemoveElement = (index: number) => {
 		const newQueue = Array.from(mediaAtom.queue);
