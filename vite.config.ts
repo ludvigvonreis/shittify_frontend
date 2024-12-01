@@ -13,15 +13,15 @@ export default defineConfig({
 			"@utils": path.resolve(__dirname, "src/utils"),
 			"@atoms": path.resolve(__dirname, "src/atoms"),
 			"@hooks": path.resolve(__dirname, "src/hooks"),
+			"@lib": path.resolve(__dirname, "src/lib"),
 		},
 	},
 	server: {
 		headers: {
-			"Access-Control-Allow-Origin": "*", // Allow requests from any origin
+			"Access-Control-Allow-Origin": "http://localhost:3000", // Allow requests from any origin
 			"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS", // Allowed HTTP methods
 			"Access-Control-Allow-Headers": "Content-Type, Authorization", // Allowed headers
 			"Access-Control-Allow-Credentials": "true", // Allow credentials (e.g., cookies, authorization headers)
-			
 		},
 	},
 });

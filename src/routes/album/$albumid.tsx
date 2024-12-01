@@ -20,7 +20,7 @@ export const Route = createFileRoute("/album/$albumid")({
 });
 
 async function fetchAlbum(albumId: string): Promise<Album> {
-	const response = await fetch(`http://localhost:3000/v1/album/${albumId}`);
+	const response = await fetch(`http://localhost:3000/api/v1/album/${albumId}`);
 	const value = await response.json();
 	return value;
 }

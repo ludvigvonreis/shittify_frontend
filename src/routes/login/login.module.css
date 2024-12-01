@@ -1,0 +1,12 @@
+.bg-animation {
+	animation: pulse-bg 10s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-bg {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}

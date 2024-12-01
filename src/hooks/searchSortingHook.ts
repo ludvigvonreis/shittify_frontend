@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import Fuse from "fuse.js";
 
 async function fetchSearchResults(query: string): Promise<SearchResults> {
-	const response = await fetch(`http://localhost:3000/v1/search/${query}`);
+	const response = await fetch(`http://localhost:3000/api/v1/search/${query}`);
 	const data: SearchResults = await response.json();
 	return data;
 }
@@ -41,8 +41,6 @@ export function useSearchResults(query: string) {
 				type: 'artist',
 			})),
 		];
-
-		console.log(normalizedResults);
 
 		// Fuse.js for fuzzy matching (or use your custom relevance logic)
 		const fuse = new Fuse(normalizedResults, {

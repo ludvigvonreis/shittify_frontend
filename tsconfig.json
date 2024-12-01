@@ -12,6 +12,7 @@
       "@atoms/*": ["atoms/*"],
       "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"],
+      "@lib/*": ["lib/*"],
     }
   }
 }

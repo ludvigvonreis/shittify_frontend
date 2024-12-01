@@ -45,7 +45,6 @@ function RouteComponent() {
 	if (data.tracks.length < 1) return <>Nothing Found</>;
 
 	if (!mostRelevant) mostRelevant = data.tracks[0];
-	console.log(mostRelevant);
 
 	return (
 		<main className="pb-24">
