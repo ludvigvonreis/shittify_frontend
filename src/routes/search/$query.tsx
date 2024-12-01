@@ -22,11 +22,11 @@ function RouteComponent() {
 	const [search, setSearch] = useAtom(SearchAtom);
 	usePageTitle("Shittify - Search");
 
-	if (query !== search) {
-		setSearch(query);
-	}
-
 	useEffect(() => {
+		if (query !== search) {
+			setSearch(query);
+		}
+
 		return () => {
 			setSearch("");
 		};

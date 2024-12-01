@@ -1,4 +1,4 @@
-import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
+import { Link, Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import MediaPlayer from "@components/mediaPlayer/MediaPlayer";
 import SearchField from "@components/search/SearchField";
@@ -17,14 +17,17 @@ const queryClient = new QueryClient();
 
 function RootComponent() {
 	const accentColor = useAtomValue(AccentColorAtom);
-
-
 	useEffect(() => {
 		document.documentElement.style.setProperty(
 			"--accent-color",
 			accentColor
 		);
 	}, [accentColor]);
+
+	// HACK: Biggest hack ever, prevents stuff from loading in this ROOT component when login is visible.
+	// Both to prevent unused rendering time but also to prevent music and interaction from happening in the login route
+	const location = useLocation();
+	if (location.href.includes("login")) return <Outlet />;
 
 	return (
 		<>

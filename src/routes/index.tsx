@@ -18,7 +18,7 @@ function HomeComponent() {
 	return (
 		<div className="p-2">
 			<AudioVizualizer className={"w-full h-64 rounded-lg mx-auto"} />
-			
+
 			<button onClick={handleSignOut} className="bg-slate-800 p-4 rounded-md">Sign out</button>
 		</div>
 	);
