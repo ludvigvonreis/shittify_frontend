@@ -1,6 +1,7 @@
-import { AccentColorAtom, MediaNodesAtom } from "@atoms/MediaPlayerAtoms";
+import { AccentColorAtom } from "@atoms/atoms";
+import { MediaNodesAtom } from "@atoms/MediaPlayerAtoms";
 import { useAtomValue } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface AudioVizualizerProps {
 	className: string;

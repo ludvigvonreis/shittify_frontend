@@ -1,7 +1,4 @@
-import { AccentColorAtom } from "@atoms/MediaPlayerAtoms";
-import { animated, useSpring } from "@react-spring/web";
-import { useAtomValue } from "jotai";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface ProgressBarProps {
@@ -41,7 +38,7 @@ export default function ProgressBar({
 			ref={progressRef}
 		>
 			<div
-				className="h-full rounded-md bg-white transition-all duration-100 ease-out group-hover:bg-accent"
+				className="h-full rounded-md bg-white transition-all duration-300 ease-out group-hover:bg-accent"
 				style={{ width: `${Math.min(percentage, 1) * 100}%` }}
 			></div>
 		</div>

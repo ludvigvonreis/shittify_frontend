@@ -77,3 +77,7 @@ interface SearchArtist {
 	image: string
 	search_tsv: string
 }
+
+interface Settings {
+	accentColor: string;
+}
