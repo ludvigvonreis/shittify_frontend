@@ -236,7 +236,7 @@ export default function AudioController(props: AudioControllerProps) {
 			onCanPlay={() => {
 				setIsReady(true);
 			}}
-			onError={(e) => console.log(e)}
+			onError={(e) => console.error(e)}
 			onTimeUpdate={onTimeUpdate}
 			onEnded={() => {
 				// add one to queue index when song has ended

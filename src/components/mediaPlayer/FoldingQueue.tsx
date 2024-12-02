@@ -148,10 +148,10 @@ function QueueItem(props: IQueueItem) {
 				alt={`${props.album} image`}
 				className="p-1 rounded-lg h-full aspect-square"
 			/>
-			<div>
+			<div className="flex-1 min-w-0">
 				<h1
 					className={twMerge(
-						"text-lg truncate",
+						"text-lg truncate overflow-hidden text-ellipsis whitespace-nowrap",
 						props.queueIndex === props.index ? "text-accent" : ""
 					)}
 				>

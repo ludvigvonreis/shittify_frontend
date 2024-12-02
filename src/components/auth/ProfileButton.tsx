@@ -9,11 +9,9 @@ export default function ProfileButton() {
 	const [isActive, setIsActive] = useState(false);
 	const divRef = useRef<HTMLDivElement | null>(null);
 	useDismissOnClickOutside(divRef, setIsActive);
-
-	console.log(isActive);
-
+	
 	return (
-		<div className="w-full h-full flex justify-end relative">
+		<div className="w-full h-full flex justify-end relative p-1">
 			<img
 				data-ignore-click
 				title={session.data?.user.name}
