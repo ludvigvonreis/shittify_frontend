@@ -1,36 +1,29 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { secondsToClockFormat, secondsToReadable } from "@utils/time";
+import { secondsToReadable } from "@utils/time";
 import Icon from "@components/shared/Icon";
 import { useAddToQueue, useSetQueue } from "@hooks/mediaHooks";
 import {
-	AccentColorAtom,
 	CurrentTrackAtom,
 	MediaAtom,
 } from "@atoms/MediaPlayerAtoms";
 import { useAtomValue, useSetAtom } from "jotai";
-import { twMerge } from "tailwind-merge";
 import TrackListItem from "@components/overview/TrackListItem";
 import { ToastMessageAtom } from "@atoms/atoms";
 import { Messages } from "@utils/constants";
 import { usePageTitle } from "@hooks/usePageTitle";
+import { fetchWithAuth } from "@utils/fetchWithAuth";
 
 export const Route = createFileRoute("/album/$albumid")({
 	component: RouteComponent,
 });
-
-async function fetchAlbum(albumId: string): Promise<Album> {
-	const response = await fetch(`http://localhost:3000/api/v1/album/${albumId}`);
-	const value = await response.json();
-	return value;
-}
 
 function RouteComponent() {
 	const { albumid } = Route.useParams();
 
 	const { data, isSuccess } = useSuspenseQuery({
 		queryKey: ["album", albumid],
-		queryFn: () => fetchAlbum(albumid),
+		queryFn: () => fetchWithAuth<Album>(`http://localhost:3000/api/v1/album/${albumid}`),
 	});
 
 	if (!isSuccess) return <>ERROR</>;

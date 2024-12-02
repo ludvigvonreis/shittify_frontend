@@ -1,18 +1,13 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import Fuse from "fuse.js";
-
-async function fetchSearchResults(query: string): Promise<SearchResults> {
-	const response = await fetch(`http://localhost:3000/api/v1/search/${query}`);
-	const data: SearchResults = await response.json();
-	return data;
-}
+import { fetchWithAuth } from "@utils/fetchWithAuth";
 
 export function useSearchResults(query: string) {
 	// Fetch search results
 	const { data, isLoading, isError, error } = useQuery({
 		queryKey: ["search", query],
-		queryFn: () => fetchSearchResults(query),
+		queryFn: () => fetchWithAuth<SearchResults>(`http://localhost:3000/api/v1/search/${query}`),
 		placeholderData: keepPreviousData,
 	});
 

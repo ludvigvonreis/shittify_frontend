@@ -209,7 +209,7 @@ function MostRelevant({ data }: MostRelevantProps) {
 	// Type guards for identifying the specific type and rendering accordingly
 	if ("track_id" in data) {
 		// SearchTrack
-		return renderContent(data.album_image, data.name, "Album", data.artist);
+		return renderContent(data.album_image, data.name, "Track", data.artist);
 	}
 
 	if ("album_id" in data) {
