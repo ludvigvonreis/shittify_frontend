@@ -6,13 +6,14 @@ import { useAddToQueue, useSetQueue } from "@hooks/mediaHooks";
 import {
 	CurrentTrackAtom,
 	MediaAtom,
+	TogglesAtom,
 } from "@atoms/MediaPlayerAtoms";
 import { useAtomValue, useSetAtom } from "jotai";
-import TrackListItem from "@components/overview/TrackListItem";
 import { ToastMessageAtom } from "@atoms/atoms";
 import { Messages } from "@utils/constants";
 import { usePageTitle } from "@hooks/usePageTitle";
 import { fetchWithAuth } from "@utils/fetchWithAuth";
+import TrackTable, { TrackListItem } from "@components/overview/TrackTable";
 
 export const Route = createFileRoute("/album/$albumid")({
 	component: RouteComponent,
@@ -23,18 +24,21 @@ function RouteComponent() {
 
 	const { data, isSuccess } = useSuspenseQuery({
 		queryKey: ["album", albumid],
-		queryFn: () => fetchWithAuth<Album>(`http://localhost:3000/api/v1/album/${albumid}`),
+		queryFn: () =>
+			fetchWithAuth<Album>(
+				`http://localhost:3000/api/v1/album/${albumid}`
+			),
 	});
 
 	if (!isSuccess) return <>ERROR</>;
 
-	usePageTitle(`${data.title} - ${data.artist}`)
+	usePageTitle(`${data.title} - ${data.artist}`);
 
 	const setQueue = useSetQueue();
 	const addQueue = useAddToQueue();
 	const currentTrack = useAtomValue(CurrentTrackAtom);
-	const mediaAtom = useAtomValue(MediaAtom);
 	const setToastMessage = useSetAtom(ToastMessageAtom);
+	const mediaToggles = useAtomValue(TogglesAtom);
 
 	data.length = data.contents.reduce((accumulator: number, currentValue) => {
 		return accumulator + currentValue.duration;
@@ -44,11 +48,9 @@ function RouteComponent() {
 		<TrackListItem
 			key={element.track_id}
 			element={element}
-			queue={mediaAtom.queue}
-			currentTrack={currentTrack}
-			index={index}
+			currentTrack={mediaToggles.isPlaying ? currentTrack : null}
 			onDoubleClick={() => setQueue([element], true)}
-			addToQueue={() => {
+			onQueueClick={() => {
 				if (addQueue(element))
 					setToastMessage(Messages.addToQueueMessage);
 			}}
@@ -85,23 +87,7 @@ function RouteComponent() {
 				className="pl-8 text-[4rem] text-accent"
 				onClick={() => setQueue(data.contents, true)}
 			/>
-			<div className="text-white p-4 rounded-lg">
-				{/* Header */}
-				<div
-					className="grid grid-cols-[50px_1fr_2rem_3rem] 
-					text-slate-400 text-sm pb-2 border-b border-slate-700"
-				>
-					<div className="text-center ml-3">#</div>
-					<div>Title</div>
-					<div></div>
-					<div className="text-right">
-						<Icon type="schedule" className="mr-2" />
-					</div>
-				</div>
-
-				{/* Track Rows */}
-				<div className="space-y-3 mt-3">{tableBody}</div>
-			</div>
+			<TrackTable>{tableBody}</TrackTable>
 		</main>
 	);
 }

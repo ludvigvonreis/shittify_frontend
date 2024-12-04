@@ -1,13 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useAtom } from "jotai";
 import { SettingsAtom } from "@atoms/atoms";
 import { useEffect, useState } from "react";
 import { useBlocker } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchWithAuth } from "@utils/fetchWithAuth";
+import { authClient, isAuthenticated } from "@lib/auth-client";
 
 export const Route = createFileRoute("/settings/")({
 	component: RouteComponent,
+	beforeLoad: async () => {
+		if (!(await isAuthenticated())) {
+			throw redirect({ to: "/" });
+		}
+	},
 });
 
 const updateSettings = async (data: Settings) => {
@@ -23,7 +29,9 @@ const SelectableColors: { [key: string]: string } = {
 	"#eab308": "Yellow",
 	"#84cc16": "Lime",
 	"#10b981": "Green",
+	"#0891b2": "Cyan",
 	"#0ea5e9": "Blue",
+	"#3b82f6": "Dark Blue",
 	"#6366f1": "Indigo",
 	"#a855f7": "Violet",
 	"#ec4899": "Pink",
@@ -31,7 +39,6 @@ const SelectableColors: { [key: string]: string } = {
 
 function RouteComponent() {
 	const queryClient = useQueryClient();
-
 	// Data Loading
 	const [settings] = useAtom(SettingsAtom);
 
@@ -48,7 +55,7 @@ function RouteComponent() {
 		},
 		onSettled: async () => {
 			await queryClient.invalidateQueries();
-		}
+		},
 	});
 
 	useEffect(() => {
@@ -56,6 +63,7 @@ function RouteComponent() {
 
 		setSettingsCopy(settings);
 	}, [settings, setSettingsCopy]);
+
 
 	useBlocker({
 		blockerFn: () => window.confirm("Are you sure you want to leave?"),
@@ -65,8 +73,6 @@ function RouteComponent() {
 	function onSave() {
 		if (isDirty === false) return;
 		if (!settingsCopy) return;
-
-		console.log("Im saving your mother");
 
 		const newSettings: Settings = {
 			...settings,
@@ -80,36 +86,38 @@ function RouteComponent() {
 	return (
 		<main className="flex justify-center">
 			<div className="w-1/2 h-max bg-slate-800 p-3 rounded-md flex flex-col gap-5">
-				<h1 className="text-2xl font-bold mb-5">Settings</h1>
+				<h1 className="text-3xl font-bold mb-5">Settings</h1>
 				<section className="flex flex-col gap-4">
-					<h2 className="text-lg font-bold">Accent color</h2>
+					<h2 className="text-xl font-bold">Accent color</h2>
 					<div className="flex flex-row h-auto w-auto gap-2 mx-auto justify-center">
-						{Object.keys(SelectableColors).map((element: string) => {
-							return (
-								<div
-									key={element}
-									title={SelectableColors[element]}
-									className={
-										"size-6 rounded-md outline-white outline-1"
-									}
-									style={{
-										backgroundColor: element,
-										outlineStyle:
-											settingsCopy?.accentColor ===
-											element
-												? "solid"
-												: "none",
-									}}
-									onClick={() => {
-										setIsDirty(true);
-										setSettingsCopy({
-											...settingsCopy,
-											accentColor: element,
-										});
-									}}
-								></div>
-							);
-						})}
+						{Object.keys(SelectableColors).map(
+							(element: string) => {
+								return (
+									<div
+										key={element}
+										title={SelectableColors[element]}
+										className={
+											"size-6 rounded-md outline-white outline-1 hover:scale-105 transition-transform"
+										}
+										style={{
+											backgroundColor: element,
+											outlineStyle:
+												settingsCopy?.accentColor ===
+												element
+													? "solid"
+													: "none",
+										}}
+										onClick={() => {
+											setIsDirty(true);
+											setSettingsCopy({
+												...settingsCopy,
+												accentColor: element,
+											});
+										}}
+									></div>
+								);
+							}
+						)}
 					</div>
 					<button
 						className="mx-auto font-bold"

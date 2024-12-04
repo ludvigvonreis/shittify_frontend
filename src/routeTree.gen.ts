@@ -16,6 +16,7 @@ import { Route as SettingsIndexImport } from './routes/settings/index'
 import { Route as SearchIndexImport } from './routes/search/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as SearchQueryImport } from './routes/search/$query'
+import { Route as PlaylistPlaylistidImport } from './routes/playlist/$playlistid'
 import { Route as AlbumAlbumidImport } from './routes/album/$albumid'
 
 // Create/Update Routes
@@ -50,6 +51,12 @@ const SearchQueryRoute = SearchQueryImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const PlaylistPlaylistidRoute = PlaylistPlaylistidImport.update({
+  id: '/playlist/$playlistid',
+  path: '/playlist/$playlistid',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AlbumAlbumidRoute = AlbumAlbumidImport.update({
   id: '/album/$albumid',
   path: '/album/$albumid',
@@ -72,6 +79,13 @@ declare module '@tanstack/react-router' {
       path: '/album/$albumid'
       fullPath: '/album/$albumid'
       preLoaderRoute: typeof AlbumAlbumidImport
+      parentRoute: typeof rootRoute
+    }
+    '/playlist/$playlistid': {
+      id: '/playlist/$playlistid'
+      path: '/playlist/$playlistid'
+      fullPath: '/playlist/$playlistid'
+      preLoaderRoute: typeof PlaylistPlaylistidImport
       parentRoute: typeof rootRoute
     }
     '/search/$query': {
@@ -110,6 +124,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/album/$albumid': typeof AlbumAlbumidRoute
+  '/playlist/$playlistid': typeof PlaylistPlaylistidRoute
   '/search/$query': typeof SearchQueryRoute
   '/login': typeof LoginIndexRoute
   '/search': typeof SearchIndexRoute
@@ -119,6 +134,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/album/$albumid': typeof AlbumAlbumidRoute
+  '/playlist/$playlistid': typeof PlaylistPlaylistidRoute
   '/search/$query': typeof SearchQueryRoute
   '/login': typeof LoginIndexRoute
   '/search': typeof SearchIndexRoute
@@ -129,6 +145,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/album/$albumid': typeof AlbumAlbumidRoute
+  '/playlist/$playlistid': typeof PlaylistPlaylistidRoute
   '/search/$query': typeof SearchQueryRoute
   '/login/': typeof LoginIndexRoute
   '/search/': typeof SearchIndexRoute
@@ -140,6 +157,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/album/$albumid'
+    | '/playlist/$playlistid'
     | '/search/$query'
     | '/login'
     | '/search'
@@ -148,6 +166,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/album/$albumid'
+    | '/playlist/$playlistid'
     | '/search/$query'
     | '/login'
     | '/search'
@@ -156,6 +175,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/album/$albumid'
+    | '/playlist/$playlistid'
     | '/search/$query'
     | '/login/'
     | '/search/'
@@ -166,6 +186,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlbumAlbumidRoute: typeof AlbumAlbumidRoute
+  PlaylistPlaylistidRoute: typeof PlaylistPlaylistidRoute
   SearchQueryRoute: typeof SearchQueryRoute
   LoginIndexRoute: typeof LoginIndexRoute
   SearchIndexRoute: typeof SearchIndexRoute
@@ -175,6 +196,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlbumAlbumidRoute: AlbumAlbumidRoute,
+  PlaylistPlaylistidRoute: PlaylistPlaylistidRoute,
   SearchQueryRoute: SearchQueryRoute,
   LoginIndexRoute: LoginIndexRoute,
   SearchIndexRoute: SearchIndexRoute,
@@ -193,6 +215,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/album/$albumid",
+        "/playlist/$playlistid",
         "/search/$query",
         "/login/",
         "/search/",
@@ -204,6 +227,9 @@ export const routeTree = rootRoute
     },
     "/album/$albumid": {
       "filePath": "album/$albumid.tsx"
+    },
+    "/playlist/$playlistid": {
+      "filePath": "playlist/$playlistid.tsx"
     },
     "/search/$query": {
       "filePath": "search/$query.tsx"

@@ -81,3 +81,12 @@ interface SearchArtist {
 interface Settings {
 	accentColor: string;
 }
+
+interface PlaylistMetadata {
+	playlist_id: string;
+	user_id: string;
+	name: string;
+	description: string;
+	image: string;
+	public: boolean;
+}
