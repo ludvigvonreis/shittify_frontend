@@ -2,17 +2,18 @@ import { authClient } from "@lib/auth-client";
 
 interface FetchWithAuthOptions extends RequestInit {
 	headers?: HeadersInit;
-	body?: string;
+	body?: string | FormData;
 	method?: string;
 }
 
 export const fetchWithAuth = async <T = any>(
 	url: string,
-	options: FetchWithAuthOptions = {}
+	options: FetchWithAuthOptions = {},
+	defaultHeaders = true,
 ): Promise<T> => {
-	const headers = {
+	const headers = defaultHeaders ? {
 		"Content-Type": "application/json",
-	};
+	} : "";
 
 	const response = await fetch(url, {
 		...options,

@@ -109,7 +109,7 @@ function RouteComponent() {
 					})}
 				</ul>
 			</div>
-			<SearchRow title={"Albums"}>
+			<SearchRow title={<h2>Albums</h2>}>
 				{data.albums.slice(0, 7).map((element) => (
 					<Card
 						key={element.album_id}
@@ -142,7 +142,7 @@ function RouteComponent() {
 					/>
 				))}
 			</SearchRow>
-			<SearchRow title={"Artists"}>
+			<SearchRow title={<h2>Artists</h2>}>
 				{data.artists.slice(0, 7).map((element) => (
 					<Card
 						key={element.artist_id}
@@ -160,17 +160,17 @@ function RouteComponent() {
 
 interface SearchRowProps {
 	children: React.ReactNode[] | React.ReactNode;
-	title: string;
+	title: React.ReactNode;
 }
 
 interface MostRelevantProps {
 	data: SearchAlbum | SearchTrack | SearchArtist;
 }
 
-function SearchRow(props: SearchRowProps) {
+export function SearchRow(props: SearchRowProps) {
 	return (
 		<section className="h-max w-full select-none">
-			<h2 className="px-7 text-2xl font-bold">{props.title}</h2>
+			<div className="px-7 text-2xl font-bold">{props.title}</div>
 			<div className="h-72 w-full overflow-x-scroll flex items-center p-2">
 				{props.children}
 			</div>
