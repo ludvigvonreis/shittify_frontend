@@ -9,6 +9,8 @@ interface IInput {
 	placeHolder?: string;
 	name?: string;
 
+	max?: number;
+
 	value: string;
 	onChange?: (
 		event:
@@ -26,6 +28,7 @@ export function Input({
 	placeHolder,
 	onChange,
 	name,
+	max,
 }: IInput) {
 	const id = useId();
 
@@ -37,6 +40,7 @@ export function Input({
 	const inputVariant = (
 		<input
 			id={id}
+			maxLength={max}
 			type="text"
 			className={twMerge(baseClasses, className)}
 			value={value}

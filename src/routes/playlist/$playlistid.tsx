@@ -15,14 +15,12 @@ import { Messages } from "@utils/constants";
 import {
 	ChangeEvent,
 	FormEvent,
-	useId,
 	useMemo,
 	useRef,
 	useState,
 } from "react";
 import { usePageTitle } from "@hooks/usePageTitle";
 import Icon from "@components/shared/Icon";
-import { twMerge } from "tailwind-merge";
 import { Input } from "@components/shared/Input";
 
 interface User {
@@ -106,6 +104,7 @@ function RouteComponent() {
 				<EditModal
 					playlistId={playlistMetadata.playlist_id}
 					name={playlistMetadata.name}
+					public={playlistMetadata.public}
 					description={playlistMetadata.description}
 					image={playlistMetadata.image}
 					onClose={() => {
@@ -113,38 +112,47 @@ function RouteComponent() {
 					}}
 				/>
 			)}
-			<header
-				className="h-max w-full flex flex-row p-5 gap-5"
-				onClick={() => setEditModalActive(true)}
-			>
+			<header className="h-max w-full flex flex-row p-5 gap-5">
 				<img
 					src={playlistMetadata.image}
 					alt=""
 					className="w-64 h-64 
-	  				rounded-md hover:scale-105 transition-transform"
+	  				rounded-md hover:scale-105 transition-transform object-cover"
+					onClick={() => setEditModalActive(true)}
 				/>
-				<div className="flex flex-col justify-center">
+				<div className="flex flex-col justify-center truncate">
 					<p className="text-md">Playlist</p>
-					<h1 className="text-[7rem] font-bold">
+					<h1
+						className="text-[7rem] font-bold truncate"
+						onClick={() => setEditModalActive(true)}
+					>
 						{playlistMetadata.name}
 					</h1>
-					<p className="text-md">{playlistMetadata.description}</p>
-					<p>
-						{userData.name}
-						<span className="font-extralight text-slate-400">
-							{" • "}
-							{`${playlistTracks.length} song${playlistTracks.length >= 2 ? "s" : ""}`}
-							{" • "}
-							{secondsToReadable(totalTime)}
-						</span>
+					<p className="text-md w-max">
+						{playlistMetadata.description}
 					</p>
+					<span className="w-max">
+						<span className="hover:underline w-max">
+							{userData.name}
+						</span>
+						{playlistTracks.length > 0 && (
+							<span className="font-extralight text-slate-400">
+								{" • "}
+								{`${playlistTracks.length} song${playlistTracks.length >= 2 ? "s" : ""}`}
+								{" • "}
+								{secondsToReadable(totalTime)}
+							</span>
+						)}
+					</span>
 				</div>
 			</header>
-			<Icon
-				type="play_circle"
-				className="pl-8 text-[4rem] text-accent"
-				onClick={() => setQueue(playlistTracks, true)}
-			/>
+			{playlistTracks.length > 0 && (
+				<Icon
+					type="play_circle"
+					className="pl-8 text-[4rem] text-accent"
+					onClick={() => setQueue(playlistTracks, true)}
+				/>
+			)}
 			{playlistTracks.length > 0 && (
 				<TrackTable includeAlbum includeDate>
 					{tableBody}
@@ -158,6 +166,7 @@ interface IEditModal {
 	name: string;
 	description: string;
 	image: string;
+	public: boolean;
 	playlistId: string;
 	onClose?: () => void;
 }
@@ -165,10 +174,12 @@ interface IEditModal {
 function EditModal(props: IEditModal) {
 	const fileRef = useRef<HTMLInputElement | null>(null);
 	const [isDirty, setIsDirty] = useState(false);
+	const queryClient = useQueryClient();
 
 	const [name, setName] = useState(props.name);
 	const [description, setDescription] = useState(props.description);
 	const [image, setImage] = useState(props.image);
+	const [isPublic, setIsPublic] = useState(props.public);
 	const [toastMessage, setToastMessage] = useState("");
 
 	const mutation = useMutation({
@@ -180,7 +191,6 @@ function EditModal(props: IEditModal) {
 				false
 			),
 		onSuccess: () => {
-			const queryClient = useQueryClient();
 			queryClient.invalidateQueries();
 		},
 	});
@@ -206,15 +216,42 @@ function EditModal(props: IEditModal) {
 	async function onSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
-		const formData = new FormData(e.currentTarget);
-		mutation.mutate(formData);
-	}
-	
-	function handleClose(e: React.MouseEvent<HTMLElement, MouseEvent>) {
-		const target = e.target as HTMLElement;
-		// Ignore invalid closing elements.
-		if (target.closest("[data-ignore-click]")) return;
+		const originalData = {
+			name: props.name,
+			description: props.description,
+			image: props.image, // Image will need some different logic
+			public: props.public,
+		};
 
+		const formData = new FormData(e.currentTarget);
+		const newFormData = {} as FormData;
+
+		// Loop through FormData entries
+		formData.forEach((value, key) => {
+			// Check if the value has changed by comparing it with the original data
+
+			if (key === "image") {
+				if (image !== originalData.image) {
+					// @ts-ignore
+					newFormData[key] = value;
+				}
+			} else {
+				// @ts-ignore
+				if (originalData[key] !== value) {
+					// @ts-ignore
+					newFormData[key] = value;
+				}
+			}
+		});
+
+		setIsDirty(false);
+		mutation.mutate(formData);
+		if (props.onClose) {
+			props.onClose();
+		}
+	}
+
+	function handleClose() {
 		if (isDirty === false && props.onClose) {
 			props.onClose();
 		}
@@ -228,9 +265,20 @@ function EditModal(props: IEditModal) {
 		<div
 			className="absolute top-0 left-0 w-screen h-screen
 		bg-black/60 z-50 flex items-center justify-center"
-		onClick={handleClose}
+			onClick={(e) => {
+				const target = e.target as HTMLElement;
+				// Ignore invalid closing elements.
+				if (target.closest("[data-ignore-click]")) {
+					e.stopPropagation();
+					return;
+				}
+				handleClose();
+			}}
 		>
-			<div className="w-2/5 h-auto bg-slate-800 p-5 m-5 rounded-lg flex flex-col gap-2" data-ignore-click>
+			<div
+				className="w-2/5 h-auto bg-slate-800 p-5 m-5 rounded-lg flex flex-col gap-2"
+				data-ignore-click
+			>
 				<span className="inline-flex items-center">
 					<h2 className="text-2xl">Edit details</h2>
 					<Icon
@@ -239,12 +287,14 @@ function EditModal(props: IEditModal) {
 						onClick={handleClose}
 					/>
 				</span>
-				{toastMessage && <span className="bg-blue-600 rounded-md p-1 inline-flex flex-row gap-2 items-center">
-					<Icon type="info" />
-					<p className="text-sm">{toastMessage}</p>
-				</span>}
+				{toastMessage && (
+					<span className="bg-blue-600 rounded-md p-1 inline-flex flex-row gap-2 items-center">
+						<Icon type="info" />
+						<p className="text-sm">{toastMessage}</p>
+					</span>
+				)}
 				<form encType="multipart/form-data" onSubmit={onSubmit}>
-					<div className="grid grid-cols-2 grid-rows-1 gap-4 py-2">
+					<div className="grid grid-cols-2 grid-rows-1 gap-4 py-2 pb-5">
 						<div className="relative w-auto h-auto aspect-square group">
 							<img
 								src={image}
@@ -274,6 +324,7 @@ function EditModal(props: IEditModal) {
 						</div>
 						<div className="flex flex-col gap-5 h-full flex-grow">
 							<Input
+								max={50}
 								type="INPUT"
 								label="Name"
 								value={name}
@@ -297,6 +348,23 @@ function EditModal(props: IEditModal) {
 								}}
 								name="description"
 							/>
+							<div className="w-full flex">
+								<label htmlFor="public" className="w-max">
+									Public
+								</label>
+								<input
+									className="ml-auto w-4 h-4 rounded
+									bg-slate-500 appearance-none accent-accent
+									checked:appearance-auto"
+									type="checkbox"
+									name="public"
+									id="public"
+									onChange={(e) =>
+										setIsPublic(e.target.checked)
+									}
+									checked={isPublic}
+								/>
+							</div>
 						</div>
 					</div>
 					<div className="flex gap-2">
@@ -318,6 +386,7 @@ function EditModal(props: IEditModal) {
 						<button
 							type="submit"
 							className="bg-accent w-max text-xl p-3 px-5 rounded-xl"
+							disabled={mutation.isPending}
 						>
 							Save
 						</button>
