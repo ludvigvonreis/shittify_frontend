@@ -1,8 +1,12 @@
+import AddToPlaylist from "@components/shared/AddMenu";
 import Icon from "@components/shared/Icon";
 import { Link } from "@tanstack/react-router";
 import { formatDate, secondsToClockFormat } from "@utils/time";
-import React, { memo } from "react";
+import { atom, useAtom, useSetAtom } from "jotai";
+import React, { useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
+
+const PopoverAtom = atom({ visible: false, id: "" });
 
 interface ITrackTable {
 	children: React.ReactNode | React.ReactNode[];
@@ -13,7 +17,6 @@ interface ITrackTable {
 interface ITrackListItem {
 	element: Track;
 	onDoubleClick?: () => void;
-	onQueueClick?: () => void;
 	currentTrack?: Track | null;
 
 	includeDate?: boolean;
@@ -31,7 +34,7 @@ export default function TrackTable({
 		<div className="text-white p-4 rounded-lg">
 			<div
 				className="flex gap-5 text-slate-400 px-5
-		pb-2 mb-5 border-b border-slate-700 select-none"
+			pb-2 mb-5 border-b border-slate-700 select-none"
 			>
 				<p className="w-5 text-center">#</p>
 				<p className="w-1/3">Title</p>
@@ -56,18 +59,48 @@ export function TrackListItem({
 	includeImage,
 	date,
 	onDoubleClick,
-	onQueueClick,
 }: ITrackListItem) {
 	const isCurrentTrack = currentTrack?.track_id === element.track_id;
 	const playPauseIcon = isCurrentTrack ? "pause" : "play_arrow";
 	const trackTextStyle = isCurrentTrack ? "text-accent" : "";
+	const [popOver, setPopover] = useAtom(PopoverAtom);
+
+	const handleButtonClick = (id: string) => {
+		setPopover((prev) => ({
+			visible: prev.id !== id || !prev.visible,
+			id,
+		}));
+	};
+
+	const handleClose = () => {
+		setPopover({ visible: false, id: "" });
+	};
+
+	const _onDoubleClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+		const target = e.target as HTMLElement;
+
+		// Check if the click is on elements with the 'data-ignore-click' attribute
+		if (target.closest("[data-ignore-click]")) {
+			return; // Ignore clicks on these elements
+		}
+
+		if (onDoubleClick) onDoubleClick();
+	};
 
 	return (
 		<article
-			className="flex gap-5 select-none group items-center
-			hover:bg-slate-800 rounded-md py-2 px-5"
-			onDoubleClick={onDoubleClick}
+			className="flex gap-5 select-none group items-center relative
+			hover:bg-slate-800 rounded-md py-2 px-5 focus:bg-slate-800"
+			tabIndex={0}
+			onDoubleClick={_onDoubleClick}
 		>
+			{popOver.visible && popOver.id === element.track_id && (
+				<AddToPlaylist
+					track_id={element.track_id}
+					track_name={element.name}
+					setOpen={handleClose}
+				/>
+			)}
 			<div className="relative inline-flex items-center justify-center w-5 h-5 overflow-hidden">
 				<span
 					className={twMerge(
@@ -124,11 +157,12 @@ export function TrackListItem({
 			<span className="flex-grow-[3]"></span>
 			<div className="w-20 inline-flex">
 				<Icon
-					type={"queue_music"}
-					onClick={onQueueClick}
-					title=""
+					type={"add_circle"}
+					onClick={(e) => handleButtonClick(element.track_id)}
+					title="Add To Playlist"
 					className="cursor-pointer opacity-1 text-slate-300
-			group-hover:opacity-100 hover:text-inherit flex-grow-[1]"
+						group-hover:opacity-100 opacity-0 group-focus:opacity-100
+						hover:text-inherit flex-grow"
 				/>
 				<time className="text-slate-400 text-light">
 					{secondsToClockFormat(element.duration)}

@@ -50,10 +50,6 @@ function RouteComponent() {
 			element={element}
 			currentTrack={mediaToggles.isPlaying ? currentTrack : null}
 			onDoubleClick={() => setQueue([element], true)}
-			onQueueClick={() => {
-				if (addQueue(element))
-					setToastMessage(Messages.addToQueueMessage);
-			}}
 		/>
 	));
 

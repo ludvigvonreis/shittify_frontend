@@ -91,10 +91,6 @@ function RouteComponent() {
 			currentTrack={mediaToggles.isPlaying ? currentTrack : null}
 			date={new Date(element.dateAdded)}
 			onDoubleClick={() => setQueue([element], true)}
-			onQueueClick={() => {
-				if (addQueue(element))
-					setToastMessage(Messages.addToQueueMessage);
-			}}
 		/>
 	));
 
